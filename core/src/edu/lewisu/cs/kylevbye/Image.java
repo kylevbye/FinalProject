@@ -6,6 +6,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 
+/**
+ * This class possesses many attributes from <code>Actor</code>.
+ * It is an object that holds a <code>TextureRegion</code> that
+ * can be drawn.
+ * 
+ * @author	Kyle V Bye
+ * @see	TextureRegion
+ * @see	Actor
+ * @see	Disposable
+ * @see	Drawable
+ *
+ */
 public class Image extends Actor implements Disposable, Drawable {
 	
 	///

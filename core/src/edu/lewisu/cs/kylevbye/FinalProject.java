@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class FinalProject extends ApplicationAdapter {
 	AssetManager assetManager;
 	SpriteBatch batch;
-	PlayerObject player;
 	Image i;
 	
 	@Override

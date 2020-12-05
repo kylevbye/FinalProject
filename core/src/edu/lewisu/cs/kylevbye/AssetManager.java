@@ -74,8 +74,10 @@ public class AssetManager implements Disposable {
 	///
 	
 	public AssetManager() {
+		
 		setRenderQueue(new ArrayList<Drawable>());
 		setSoundQueue(new ArrayList<Playable>());
+		
 	}
 	
 	///
