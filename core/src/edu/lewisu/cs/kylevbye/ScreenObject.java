@@ -55,6 +55,18 @@ public class ScreenObject extends Image implements Collidable {
 		super.setOrigin(getOriginX()/2.f, getOriginY()/2.f);
 	}
 	
+	public void initBoundingPolygon() {
+		
+		//	Primitive float arrays init all vals to 0.
+		float[] vertices = new float[8];
+		vertices[0] = getWidth();
+		vertices[4] = vertices[2];
+		vertices[5] = getHeight();
+		vertices[7] = vertices[5];
+		boundingPolygon = new Polygon(vertices);
+		
+	}
+	
 	///
 	///	Constructors
 	///
@@ -84,6 +96,7 @@ public class ScreenObject extends Image implements Collidable {
 		
 		super(textureIn, xIn, yIn, originXIn, originYIn, scaleXIn, scaleYIn, rotationAngleIn);
 		setFlippedX(flippedX); setFlippedY(flippedY);
+		initBoundingPolygon();
 		
 	}
 
