@@ -91,6 +91,7 @@ public class ScreenObject extends Image implements Collidable {
 		
 	}
 	
+	
 	public ScreenObject(Texture textureIn, float xIn, float yIn, float originXIn, float originYIn, float scaleXIn, 
 			float scaleYIn, float rotationAngleIn, boolean flippedX, boolean flippedY) {
 		

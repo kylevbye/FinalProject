@@ -5,6 +5,8 @@ package edu.lewisu.cs.kylevbye;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
@@ -13,14 +15,20 @@ import com.badlogic.gdx.utils.Disposable;
  * @author	Kyle V Bye
  *
  */
-public class AssetManager implements Disposable {
+public class AssetManager {
+	
+	///
+	///	Volumne
+	///
+	
+	public static float volume = 1.f;
 	
 	///
 	///	Fields
 	///
 	
-	private static ArrayList<Drawable> renderQueue;
-	private static ArrayList<Playable> soundQueue;
+	private static ArrayList<Drawable> renderQueue = new ArrayList<Drawable>();
+	private static ArrayList<Playable> soundQueue = new ArrayList<Playable>();
 	
 	///
 	///	Getters
@@ -40,7 +48,7 @@ public class AssetManager implements Disposable {
 	///	Functions
 	///
 	
-	public Image loadImage(String fileNameIn) {
+	public static Image loadImage(String fileNameIn) {
 		
 		Image loadedImage;
 		Texture texture =  new Texture("images/" + fileNameIn);
@@ -50,7 +58,7 @@ public class AssetManager implements Disposable {
 		
 	}
 	
-	public Image loadedImage(String fileNameIn, float xIn, float yIn, float originXIn, 
+	public static Image loadImage(String fileNameIn, float xIn, float yIn, float originXIn, 
 			float originYIn, float scaleXIn, float scaleYIn, float rotationAngleIn) {
 		
 		Image loadedImage;
@@ -63,35 +71,44 @@ public class AssetManager implements Disposable {
 		
 	}
 	
-	public void renderImages(Batch batchIn) {
+	public static Sound loadSound(String soundFileNameIn) {
 		
-		for (Drawable image : renderQueue) { if (image != null) image.draw(batchIn, 1); }
+		Sound newSound = Gdx.audio.newSound(Gdx.files.internal(soundFileNameIn));
 		
+		return newSound;
+		
+	}
+	
+	public static void renderImages(Batch batchIn) {
+		
+		while (!renderQueue.isEmpty()) {
+			Drawable d = renderQueue.remove(0);
+			if (d != null) d.draw(batchIn, 1.f);
+		}
+		
+	}
+	
+	public static void playSounds() {
+		while (!soundQueue.isEmpty()) {
+			Playable p = soundQueue.remove(0);
+			p.play(volume);
+		}
 	}
 	
 	///
 	///	Constructors
 	///
 	
-	public AssetManager() {
-		
-		setRenderQueue(new ArrayList<Drawable>());
-		setSoundQueue(new ArrayList<Playable>());
-		
-	}
+	private AssetManager() {}
 	
 	///
 	///	Destructors
 	///
 	
-	@Override
-	public void dispose() {
+	public static void dispose() {
 		
 		//	Clear
 		renderQueue.clear();
-		
-		//	Nullify
-		renderQueue = null;
 		
 	}
 
