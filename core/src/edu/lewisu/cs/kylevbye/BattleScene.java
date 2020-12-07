@@ -47,7 +47,9 @@ public class BattleScene {
 		
 		case BattleSceneConstants.INITIAL_DIALOGUE:
 			break;
-			
+		case BattleSceneConstants.GAME_OVER:
+			FinalProject.scene = FinalProject.SceneConstants.GAMEOVER;
+			break;
 		}
 		
 		//	Render Drawables

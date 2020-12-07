@@ -21,6 +21,7 @@ public class FinalProject extends ApplicationAdapter {
 	public final class SceneConstants {
 		public static final int TITLE = 0;
 		public static final int BATTLE = 1;
+		public static final int GAMEOVER = 2;
 	}
 	
 	@Override
