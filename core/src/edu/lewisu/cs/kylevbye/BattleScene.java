@@ -3,8 +3,13 @@ package edu.lewisu.cs.kylevbye;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class BattleScene {
+	
+	private OrthographicCamera cam;
+	private Batch batch;
 	
 	private static int stage;
 	private static AsgoreDialogue aDiag = new AsgoreDialogue();
@@ -26,7 +31,10 @@ public class BattleScene {
 	
 	}
 	
-	public void create() {
+	public void create(OrthographicCamera camIn, Batch batchIn) {
+		
+		cam = camIn;
+		batch = batchIn;
 		
 		stage = BattleSceneConstants.INITIAL_DIALOGUE;
 		drawables = new ArrayList<Drawable>();

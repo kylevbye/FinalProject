@@ -17,27 +17,45 @@ public class FinalProject extends ApplicationAdapter {
 	static int scene;
 	
 	TitleScene titleScene;
+	BattleScene battleScene;
+	GameOverScene gameOverScene;
 	
 	public final class SceneConstants {
+		
 		public static final int TITLE = 0;
 		public static final int BATTLE = 1;
 		public static final int GAMEOVER = 2;
+		
 	}
 	
 	@Override
 	public void create () {
+		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.translate(WIDTH/2, HEIGHT/2);
 		scene = SceneConstants.TITLE;
 		batch = new SpriteBatch();
+		
+		//	Title Scene
 		titleScene = new TitleScene();
 		titleScene.create(cam, batch);
+		
+		//	Battle Scene
+		battleScene = new BattleScene();
+		battleScene.create(cam, batch);
+		
+		//	GameOver Scene
+		gameOverScene = new GameOverScene();
+		gameOverScene.create(cam, batch);
+		
+		
 	}
 
 	@Override
 	public void render () {
+		
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -51,6 +69,11 @@ public class FinalProject extends ApplicationAdapter {
 			break;
 			
 		case SceneConstants.BATTLE:
+			battleScene.render();
+			break;
+			
+		case SceneConstants.GAMEOVER:
+			gameOverScene.render();
 			break;
 			
 		}
@@ -63,7 +86,9 @@ public class FinalProject extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
+		
 		AssetManager.dispose();
 		batch.dispose();
+		
 	}
 }

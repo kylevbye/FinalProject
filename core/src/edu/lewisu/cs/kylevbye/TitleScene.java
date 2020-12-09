@@ -27,18 +27,18 @@ public class TitleScene implements Disposable {
 		drawables = new ArrayList<Drawable>();
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
+		cam = camIn;
+		batch = batchIn;
 		
 		//	Asgore Sprite
 		Image asgoreSprite = AssetManager.loadImage("asgore.png");
 		asgoreSprite.setBounds(0, 20, 400, 400);
 		drawables.add(asgoreSprite);
-		cam = camIn;
-		batch = batchIn;
 		
 		//	Title
 		titleStyle = new LabelStyle();
 		titleStyle.fontColor = new Color(1,1,1,1);
-		titleStyle.font = new BitmapFont(Gdx.files.internal("fonts/titleFont.fnt"));
+		titleStyle.font = new BitmapFont(Gdx.files.internal("fonts/undertale.fnt"));
 		titleLabel = new Label("Asgore Genocide Fight", titleStyle);
 		
 		//	Start Button
