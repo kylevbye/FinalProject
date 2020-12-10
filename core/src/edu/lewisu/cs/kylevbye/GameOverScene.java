@@ -22,6 +22,10 @@ public class GameOverScene {
 	private Batch batch;
 	private ArrayList<Drawable> drawables;
 	private Label gameOverLabel;
+	private Label dialogue1, dialogue2;
+	private Label dialogue3, dialogue4;
+	private Rectangle dR1, dR2, dR3, dR4;
+	private float finalOpaq;
 	
 	///
 	///	Local Assets
@@ -32,6 +36,7 @@ public class GameOverScene {
 	private MobileScreenObject[] soulShards;
 	private Sound soulbreakSound;
 	private Sound soulShatterSound;
+	private Sound asgoreDialogue;
 	private Music gameOverMusic;
 	
 	///
@@ -41,6 +46,7 @@ public class GameOverScene {
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 		
 		counter = 0;
+		finalOpaq = 1.0f;
 		
 		drawables = new ArrayList<Drawable>();
 		WIDTH = Gdx.graphics.getWidth();
@@ -56,6 +62,19 @@ public class GameOverScene {
 		gameOverLabel.setFontScale(2.5f, 2.5f);
 		gameOverLabel.setAlignment(Align.center);
 		
+		//	Dialog Text
+		LabelStyle dialogueLabelStyle = new LabelStyle();
+		dialogueLabelStyle.fontColor = new Color(1,1,1,1);
+		dialogueLabelStyle.font = new BitmapFont(Gdx.files.internal("fonts/undertale.fnt"));
+		dialogue1 = new Label("You cannot give", dialogueLabelStyle);
+		dialogue2 = new Label("up just yet...", dialogueLabelStyle);
+		dialogue3 = new Label("Chara!", dialogueLabelStyle);
+		dialogue4 = new Label("Stay determined...", dialogueLabelStyle);
+		dR1 = new Rectangle(0, 0, dialogue1.getWidth()+3, dialogue1.getHeight(), new Color(0f,0f,0f,1));
+		dR2 = new Rectangle(0, 0, dialogue1.getWidth()+3, dialogue1.getHeight(), new Color(0f,0f,0f,1));
+		dR3 = new Rectangle(0, 0, dialogue3.getWidth()+3, dialogue1.getHeight(), new Color(0f,0f,0f,1));
+		dR4 = new Rectangle(0, 0, dialogue4.getWidth()+3, dialogue1.getHeight(), new Color(0f,0f,0f,1));
+		
 		//	Local Assets
 		soul = new ScreenObject(AssetManager.loadImage("soul.png"));
 		soulShatter = new ScreenObject(AssetManager.loadImage("gameOverSoulShatter.png"));
@@ -64,7 +83,9 @@ public class GameOverScene {
 		soulShards = new MobileScreenObject[6];
 		soulbreakSound = AssetManager.loadSound("soulBreak.mp3");
 		soulShatterSound = AssetManager.loadSound("soulShatter.mp3");
+		asgoreDialogue = AssetManager.loadSound("asgoreDialog.mp3");
 		gameOverMusic = AssetManager.loadMusic("determination.mp3");
+		gameOverMusic.setVolume(.2f);
 		
 		//	Manually set soul shards
 		float soulCenterX = soul.getX(); float soulCenterY = soul.getY();
@@ -106,7 +127,7 @@ public class GameOverScene {
 			
 			
 		}
-		
+	
 		if (counter > 100 && counter < 1200) {
 			for (int i = 0; i<soulShards.length; ++i) {
 				soulShards[i].applyPhysics(1f);
@@ -127,14 +148,64 @@ public class GameOverScene {
 		
 		gameOverLabel.setColor(1,1,1, labelOpaq);
 		
+		//	Dialogue Labels
+		dialogue1.setPosition(WIDTH/2 - dialogue1.getWidth()/2, HEIGHT - 3.2f*HEIGHT/4 + dialogue1.getHeight());
+		dialogue2.setPosition(WIDTH/2 - dialogue2.getWidth()/2, HEIGHT - 3.2f*HEIGHT/4);
+		dialogue3.setPosition(WIDTH/2 - dialogue1.getWidth()/2, HEIGHT - 3.2f*HEIGHT/4 + dialogue1.getHeight());
+		dialogue4.setPosition(WIDTH/2 - dialogue1.getWidth()/2, HEIGHT - 3.2f*HEIGHT/4);
+		if (counter < 500) {
+			dR1.setPosition(dialogue1.getX()-2, dialogue1.getY());
+			dR2.setPosition(dialogue2.getX()-2, dialogue2.getY());
+			dR3.setPosition(dialogue3.getX()-2, dialogue1.getY());
+			dR4.setPosition(dialogue4.getX()-2, dialogue2.getY());
+		}
+		
+		if (counter > 250 && counter < 900 || counter > 900) dR1.moveRight(3f);
+		if (counter > 610 && counter < 900 || counter > 1300) dR2.moveRight(3f);
+		if (counter > 900) dR3.moveRight(3f);
+		if (counter > 1000) dR4.moveRight(3f);
+		
+		// Apply Fade in the end
+		if (counter > 1300) {
+			finalOpaq -= .005f ;
+			gameOverLabel.setColor(1,1,1, finalOpaq);
+		}
+		
+		///	Drawing
 		for (Drawable d : drawables) AssetManager.getRenderQueue().add(d);
 		gameOverLabel.draw(batch, 1.f); 
 		
+		if (counter > 200 && counter < 900) {
+			dialogue1.draw(batch, finalOpaq);
+			dialogue2.draw(batch, finalOpaq);
+			dR1.draw(batch, finalOpaq);
+			dR2.draw(batch, finalOpaq);
+		}
+		else if (counter >= 900) {
+			dialogue3.draw(batch, finalOpaq);
+			dialogue4.draw(batch, finalOpaq);
+			dR3.draw(batch, finalOpaq);
+			dR4.draw(batch, finalOpaq);
+		}
+		
+		
+		
 		++counter;
+		
+		//	Check End
+		if (counter == 1600) FinalProject.scene = FinalProject.SceneConstants.TITLE;
 		
 	}
 	
 	public void dispose() {
+		
+		soul.dispose();
+		soulShatter.dispose();
+		for (MobileScreenObject m : soulShards) m.dispose();
+		soulbreakSound.dispose();
+		soulShatterSound.dispose();
+		asgoreDialogue.dispose();
+		gameOverMusic.dispose();
 		
 	}
 	
@@ -174,7 +245,7 @@ public class GameOverScene {
 			AssetManager.getSoundQueue().add(new Playable() {
 				public void play() { gameOverMusic.play(); }
 				public void play(float volumeIn) { 
-					gameOverMusic.setVolume(volumeIn); 
+					gameOverMusic.setVolume(volumeIn*gameOverMusic.getVolume()); 
 					gameOverMusic.play(); 
 				}
 				public void play(float volumeIn, float pitchIn, float panIn) { 
@@ -185,6 +256,22 @@ public class GameOverScene {
 			});
 			
 		}
+		
+		if (((counter > 480 && counter < 680) || (counter > 890 && counter < 930) || 
+				(counter > 1000 && counter < 1100)) && counter % 16 == 0) {
+			AssetManager.getSoundQueue().add(new Playable() {
+				public void play() { asgoreDialogue.play(1.9f); }
+				public void play(float volumeIn) { 
+					asgoreDialogue.play(volumeIn*1.9f);
+				}
+				public void play(float volumeIn, float pitchIn, float panIn) { 
+					asgoreDialogue.play(volumeIn*1.9f, pitchIn, panIn);
+				}
+			});
+		}
+		
+		if (counter > 1300) gameOverMusic.setVolume(gameOverMusic.getVolume()-.0008f);
+		
 		
 	}
 

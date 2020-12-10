@@ -75,11 +75,18 @@ public class Image extends Actor implements Disposable, Drawable {
 	
 	public Image(Texture textureIn, float xIn, float yIn, float originXIn, float originYIn, float scaleXIn, float scaleYIn, float rotationAngleIn) {
 		super();
-		setTextureRegion(new TextureRegion(textureIn));
+		if (textureIn != null) {
+			setTextureRegion(new TextureRegion(textureIn));
+			setWidth(textureIn.getWidth());
+			setHeight(textureIn.getHeight());
+		}
+		else {
+			textureRegion = null;
+			setWidth(0f);
+			setHeight(0f);
+		}
 		setOrigin(originXIn, originYIn);
 		setX(xIn-originXIn); setY(yIn-originYIn);
-		setWidth(textureIn.getWidth());
-		setHeight(textureIn.getHeight());
 		setScale(scaleXIn, scaleYIn);
 		setRotation(rotationAngleIn);
 	}
