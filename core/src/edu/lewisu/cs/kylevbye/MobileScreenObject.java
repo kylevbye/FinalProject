@@ -155,6 +155,14 @@ public class MobileScreenObject extends ScreenObject {
 		
 	}
 	
+	public void accelerateAtAngle(float angleIn) {
+		
+        accelerationVector.add(new 
+            Vector2(acceleration, 0).setAngle(angleIn)
+            );
+        
+    }
+	
 	///
 	///	Constructors
 	///

@@ -6,6 +6,7 @@ package edu.lewisu.cs.kylevbye;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -73,10 +74,17 @@ public class AssetManager {
 	
 	public static Sound loadSound(String soundFileNameIn) {
 		
-		Sound newSound = Gdx.audio.newSound(Gdx.files.internal(soundFileNameIn));
+		Sound newSound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundFileNameIn));
 		
 		return newSound;
 		
+	}
+	
+	public static Music loadMusic(String musicFileNameIn) {
+		
+		Music newMusic = Gdx.audio.newMusic(Gdx.files.internal("music/" + musicFileNameIn));
+		
+		return newMusic;
 	}
 	
 	public static void renderImages(Batch batchIn) {

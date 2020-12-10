@@ -43,7 +43,7 @@ public class TitleScene implements Disposable {
 		
 		//	Start Button
 		startLabel = new SoundLabel(450, 205, 400, 400, null, "Start", titleStyle);
-		startLabel.setSound(AssetManager.loadSound("sounds/titleStartSound.mp3"));
+		startLabel.setSound(AssetManager.loadSound("titleStartSound.mp3"));
 		startLabel.addEvent(MouseEventConstants.LEFTMOUSE, new Event() {
 			public void run() { 
 				FinalProject.scene = FinalProject.SceneConstants.BATTLE; 

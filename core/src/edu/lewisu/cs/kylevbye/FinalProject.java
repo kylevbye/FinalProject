@@ -35,7 +35,7 @@ public class FinalProject extends ApplicationAdapter {
 		HEIGHT = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.translate(WIDTH/2, HEIGHT/2);
-		scene = SceneConstants.TITLE;
+		scene = SceneConstants.GAMEOVER;
 		batch = new SpriteBatch();
 		
 		//	Title Scene
