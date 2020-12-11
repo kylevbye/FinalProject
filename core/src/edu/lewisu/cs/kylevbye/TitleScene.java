@@ -42,7 +42,7 @@ public class TitleScene implements Disposable {
 		titleLabel = new Label("Asgore Genocide Fight", titleStyle);
 		
 		//	Start Button
-		startLabel = new SoundLabel(450, 205, 400, 400, null, "Start", titleStyle);
+		startLabel = new SoundLabel(450, 205, 2f, 2f, null, "Start", titleStyle);
 		startLabel.setSound(AssetManager.loadSound("titleStartSound.mp3"));
 		startLabel.addEvent(MouseEventConstants.LEFTMOUSE, new Event() {
 			public void run() { 
@@ -61,7 +61,10 @@ public class TitleScene implements Disposable {
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		//	Handle Input
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) startLabel.onClicked(MouseEventConstants.LEFTMOUSE);
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && 
+				startLabel.wasClicked(Gdx.input.getX(), Gdx.input.getY())) {
+			startLabel.onClicked(MouseEventConstants.LEFTMOUSE);
+		}
 		
 		titleLabel.setPosition(WIDTH/2 - titleLabel.getWidth()/2, HEIGHT - HEIGHT/7);
 		

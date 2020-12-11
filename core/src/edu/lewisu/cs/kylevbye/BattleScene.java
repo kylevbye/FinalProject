@@ -16,6 +16,8 @@ public class BattleScene {
 	private int WIDTH, HEIGHT;
 	private ArrayList<Drawable> drawables;
 	
+	private PlayerEntity player;
+	
 	public class BattleSceneConstants {
 		
 		//	During Battle
@@ -40,6 +42,17 @@ public class BattleScene {
 		drawables = new ArrayList<Drawable>();
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
+		
+		//	Load Player
+		Image[] soulSprites = new Image[7];
+		soulSprites[0] = AssetManager.loadImage("soultypes/determination.png");
+		soulSprites[1] = AssetManager.loadImage("soultypes/bravery.png");
+		soulSprites[2] = AssetManager.loadImage("soultypes/justice.png");
+		soulSprites[3] = AssetManager.loadImage("soultypes/kindness.png");
+		soulSprites[4] = AssetManager.loadImage("soultypes/integrity.png");
+		soulSprites[5] = AssetManager.loadImage("soultypes/patience.png");
+		soulSprites[6] = AssetManager.loadImage("soultypes/perseverance.png");
+		player = new PlayerEntity(soulSprites);
 		
 	}
 	
@@ -68,6 +81,7 @@ public class BattleScene {
 	
 	public void dispose() {
 		
+		player.dispose();
 	}
 
 }
