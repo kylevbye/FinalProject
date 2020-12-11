@@ -49,6 +49,44 @@ public class AssetManager {
 	///	Functions
 	///
 	
+	public static void addToSoundQueue(Sound soundIn) {
+		
+		final Sound sound = soundIn;
+		Playable soundToAdd = new Playable() {
+			
+			@Override
+			public void play(float volumeIn, float pitchIn, float panIn) { 
+				sound.play(volumeIn, pitchIn, panIn); 
+			}
+			
+			@Override
+			public void play(float volumeIn) { sound.play(volumeIn); }
+			
+			@Override
+			public void play() { sound.play(); }
+	
+		};
+		
+		soundQueue.add(soundToAdd);
+		
+	}
+	
+	public static PNGAnimatedMobileScreenObject loadPNGAnimatedSprite(
+			String folderNameIn, String spriteNameIn, int spriteCountIn) {
+		
+		String fileNameLoc = "sprites/"+ folderNameIn + "/" + spriteNameIn;
+		ArrayList<Image> frames = new ArrayList<Image>();
+		
+		for (int i = 0; i <spriteCountIn; ++i) {
+			int fileNum = i+1;
+			Texture texture = new Texture(fileNameLoc + fileNum + ".png");
+			frames.add(new Image(texture, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f));
+		}
+		
+		return new PNGAnimatedMobileScreenObject(frames);
+		
+	}
+	
 	public static Image loadImage(String fileNameIn) {
 		
 		Image loadedImage;

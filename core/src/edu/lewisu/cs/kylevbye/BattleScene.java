@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class BattleScene {
 	
+	private int counter;
+	
 	private OrthographicCamera cam;
 	private Batch batch;
 	
@@ -34,6 +36,8 @@ public class BattleScene {
 	}
 	
 	public void create(OrthographicCamera camIn, Batch batchIn) {
+
+		counter = 0;
 		
 		cam = camIn;
 		batch = batchIn;
@@ -76,6 +80,7 @@ public class BattleScene {
 		//	Render Drawables
 		for (Drawable d : drawables) AssetManager.getRenderQueue().add(d);
 		
+		++counter;
 		
 	}
 	

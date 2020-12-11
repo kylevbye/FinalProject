@@ -167,6 +167,11 @@ public class MobileScreenObject extends ScreenObject {
 	///	Constructors
 	///
 	
+	public MobileScreenObject() {
+		
+		this(null, 0, 0, 0, 0, 1, 1, 0, false, false);
+	}
+	
 	public MobileScreenObject(Image imageIn) {
 		
 		this(imageIn.getTextureRegion().getTexture(), imageIn.getX(), imageIn.getY(), imageIn.getOriginX(), 

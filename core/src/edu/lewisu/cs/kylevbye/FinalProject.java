@@ -1,12 +1,19 @@
 package edu.lewisu.cs.kylevbye;
 
+import java.awt.DisplayMode;
+import java.awt.font.GraphicAttribute;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Scaling;
 
 import edu.lewisu.cs.kylevbye.input.InputHandler;
 
@@ -17,13 +24,14 @@ public class FinalProject extends ApplicationAdapter {
 	
 	int WIDTH, HEIGHT;
 	
-	OrthographicCamera cam;
+	Camera cam;
 	SpriteBatch batch;
 	Rectangle viewPort;
 	
 	static int scene;
 	
 	TitleScene titleScene;
+	LoadingBattleScene loadingBattleScene;
 	BattleScene battleScene;
 	GameOverScene gameOverScene;
 	
@@ -39,10 +47,11 @@ public class FinalProject extends ApplicationAdapter {
 	@Override
 	public void create () {
 		
+		Gdx.graphics.setWindowedMode(640, 480);
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
-		cam.translate(WIDTH/2, HEIGHT/2);
+		((OrthographicCamera)cam).translate(WIDTH/2, HEIGHT/2);
 		scene = SceneConstants.TITLE;
 		batch = new SpriteBatch();
 		
@@ -51,15 +60,18 @@ public class FinalProject extends ApplicationAdapter {
 		
 		//	Title Scene
 		titleScene = new TitleScene();
-		titleScene.create(cam, batch);
+		titleScene.create((OrthographicCamera)cam, batch);
+		
+		loadingBattleScene = new LoadingBattleScene();
+		loadingBattleScene.create((OrthographicCamera)cam, batch);
 		
 		//	Battle Scene
 		battleScene = new BattleScene();
-		battleScene.create(cam, batch);
+		battleScene.create((OrthographicCamera)cam, batch);
 		
 		//	GameOver Scene
 		gameOverScene = new GameOverScene();
-		gameOverScene.create(cam, batch);
+		gameOverScene.create((OrthographicCamera)cam, batch);
 		
 		
 	}
@@ -69,7 +81,6 @@ public class FinalProject extends ApplicationAdapter {
 		
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
-		Gdx.gl.glViewport((int)viewPort.x, (int)viewPort.y, (int)viewPort.width, (int)viewPort.height);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -78,6 +89,10 @@ public class FinalProject extends ApplicationAdapter {
 		
 		case SceneConstants.TITLE:
 			titleScene.render();
+			break;
+			
+		case SceneConstants.LOADING_BATTLE:
+			loadingBattleScene.render();
 			break;
 			
 		case SceneConstants.BATTLE:
@@ -101,26 +116,15 @@ public class FinalProject extends ApplicationAdapter {
 		
 		float newAspectRatio = (float)width/(float)height;
 		
-		float viewX, viewY;
-		viewX = 0f; viewY = 0f;
+		Vector2 size = Scaling.fit.apply(640, 480, width, height);
+		viewPort = new Rectangle();
+		viewPort.x = (int)(width - size.x) / 2;
+		viewPort.y = (int)(height - size.y) / 2;
+		viewPort.width = size.x;
+		viewPort.height = size.y;
 		
-		float scale = 1.f;
 		
-		if (newAspectRatio > 4f/3f) {
-			
-			scale = (float)height/(float)SETHEIGHT;
-			viewX = width-(SETWIDTH*scale)/2f;
-			
-		}
-		else if (newAspectRatio < 4f/3f) {
-			
-			scale = (float)width/(float)SETWIDTH;
-			viewY = height-(SETHEIGHT*scale)/2f;
-			
-		}
-		else scale = (float)WIDTH/(float)SETWIDTH;
-		
-		viewPort = new Rectangle(viewX, viewY, (float)SETWIDTH*scale, (float)SETHEIGHT*scale);
+		Gdx.gl.glViewport((int)viewPort.x, (int)viewPort.y, (int)viewPort.width, (int)viewPort.height);
 		
 	}
 	
