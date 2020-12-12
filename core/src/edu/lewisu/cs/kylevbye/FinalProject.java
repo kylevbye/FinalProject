@@ -7,6 +7,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
 import edu.lewisu.cs.kylevbye.input.InputHandler;
+import edu.lewisu.cs.kylevbye.input.PlayerInput;
 
 public class FinalProject extends ApplicationAdapter {
 	
@@ -29,11 +31,13 @@ public class FinalProject extends ApplicationAdapter {
 	Rectangle viewPort;
 	
 	static int scene;
+	static int lastScene;
 	
 	TitleScene titleScene;
 	LoadingBattleScene loadingBattleScene;
 	BattleScene battleScene;
 	GameOverScene gameOverScene;
+	
 	
 	public final class SceneConstants {
 		
@@ -85,17 +89,22 @@ public class FinalProject extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		
+		lastScene = scene;
+		
 		switch (scene) {
 		
 		case SceneConstants.TITLE:
+			//titleScene.reset();
 			titleScene.render();
 			break;
 			
 		case SceneConstants.LOADING_BATTLE:
+			//loadingBattleScene.reset();
 			loadingBattleScene.render();
 			break;
 			
 		case SceneConstants.BATTLE:
+			//battleScene.reset();
 			battleScene.render();
 			break;
 			
@@ -108,6 +117,14 @@ public class FinalProject extends ApplicationAdapter {
 		AssetManager.playSounds();
 		AssetManager.renderImages(batch);
 		batch.end();
+		
+		if (scene != lastScene) {
+			titleScene.reset();
+			loadingBattleScene.reset();
+			battleScene.reset();
+		}
+		
+		PlayerInput.resetTempControls();
 		
 	}
 	

@@ -74,6 +74,13 @@ public class TitleScene implements Disposable {
 		
 	}
 	
+	public void reset() {
+		
+		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = Gdx.graphics.getHeight();
+		
+	}
+	
 	public void dispose() {
 		
 	}

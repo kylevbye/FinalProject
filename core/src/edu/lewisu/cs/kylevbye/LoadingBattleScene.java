@@ -56,12 +56,7 @@ public class LoadingBattleScene {
 		
 		
 		if (counter < 30) {
-			if (counter % 5 == 0) {
-				//int fC = knifeAnimation.getFrameCount();
-				//if (fC == knifeAnimation.getFrames().size()-1) fC = 0;
-				//else fC += 1;
-				//knifeAnimation.setFrameCount(fC);
-			}
+			
 			knifeAnimation.play();
 			knifeAnimation.draw(batch, 1f);
 			
@@ -69,7 +64,7 @@ public class LoadingBattleScene {
 		
 		if (counter == 120) AssetManager.addToSoundQueue(battleStartSound);
 		
-		if ((counter > 120 && counter < 150) && counter%10 == 0) {
+		if ((counter > 120 && counter < 150) && counter % 10 == 0) {
 			soulSprite.draw(batch, 1f);
 		}
 		
@@ -89,10 +84,28 @@ public class LoadingBattleScene {
 
 	}
 	
+	public void reset() {
+		
+		counter = 0;
+		
+		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = Gdx.graphics.getHeight();
+		
+		soulSprite.setPosition(WIDTH/2-soulSprite.getWidth()/2, HEIGHT/2 - 7*HEIGHT/16);
+		knifeAnimation.setPosition(WIDTH/2-knifeAnimation.getWidth()/2, HEIGHT/2);
+		
+	}
+	
 	public void dispose() {
 		
 		soulSprite.dispose();
 		battleStartSound.dispose();
+		
+		soulSprite.setPosition(WIDTH/2-soulSprite.getWidth()/2, HEIGHT/2 - 7*HEIGHT/16);
+		
+		knifeAnimation.setPosition(WIDTH/2-knifeAnimation.getWidth()/2, HEIGHT/2);
+		knifeAnimation.setScale(3f);
+		knifeAnimation.setFrameDelay(5);
 		
 	}
 

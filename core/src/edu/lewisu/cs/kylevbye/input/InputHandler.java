@@ -63,12 +63,15 @@ public class InputHandler extends InputAdapter {
 		
 		case Buttons.LEFT:
 			PlayerInput.mLeft_down = false;
+			break;
 			
 		case Buttons.RIGHT:
 			PlayerInput.mright_down = false;
+			break;
 			
 		case Buttons.MIDDLE:
 			PlayerInput.mMiddle_down = false;
+			break;
 			
 		}
 		
@@ -105,31 +108,38 @@ public class InputHandler extends InputAdapter {
 		case Keys.A: 
 			PlayerInput.a_down = true;
 			PlayerInput.aWasPressed = true;
+			break;
 		
 		case Keys.S:
 			PlayerInput.s_down = true;
 			PlayerInput.sWasPressed = true;
+			break;
 			
 		case Keys.D:
 			PlayerInput.d_down = true;
 			PlayerInput.dWasPressed = true;
+			break;
 			
 		//	Arrow
 		case Keys.UP:
 			PlayerInput.up_down = true;
 			PlayerInput.upWasPressed = true;
+			break;
 		
 		case Keys.LEFT:
 			PlayerInput.left_down = true;
 			PlayerInput.leftWasPressed = true;
+			break;
 			
 		case Keys.DOWN:
 			PlayerInput.down_down = true;
 			PlayerInput.downWasPressed = true;
+			break;
 			
 		case Keys.RIGHT:
 			PlayerInput.right_down = true;
 			PlayerInput.rightWasPressed = true;
+			break;
 			
 		}
 		
@@ -161,25 +171,32 @@ public class InputHandler extends InputAdapter {
 		
 		case Keys.A: 
 			PlayerInput.a_down = false;
+			break;
 		
 		case Keys.S:
 			PlayerInput.s_down = false;
+			break;
 			
 		case Keys.D:
 			PlayerInput.d_down = false;
+			break;
 			
 		//	Arrow
 		case Keys.UP:
 			PlayerInput.up_down = false;
+			break;
 		
 		case Keys.LEFT:
 			PlayerInput.left_down = false;
+			break;
 			
 		case Keys.DOWN:
 			PlayerInput.down_down = false;
+			break;
 			
 		case Keys.RIGHT:
 			PlayerInput.right_down = false;
+			break;
 		
 		}
 		

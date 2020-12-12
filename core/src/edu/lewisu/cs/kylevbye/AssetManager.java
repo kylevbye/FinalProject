@@ -22,7 +22,7 @@ public class AssetManager {
 	///	Volumne
 	///
 	
-	public static float volume = 1.f;
+	public static float volume = 0.1f;
 	
 	///
 	///	Fields
@@ -61,6 +61,32 @@ public class AssetManager {
 			
 			@Override
 			public void play(float volumeIn) { sound.play(volumeIn); }
+			
+			@Override
+			public void play() { sound.play(); }
+	
+		};
+		
+		soundQueue.add(soundToAdd);
+		
+	}
+	
+public static void addToSoundQueue(Music soundIn) {
+		
+		final Music sound = soundIn;
+		Playable soundToAdd = new Playable() {
+			
+			@Override
+			public void play(float volumeIn, float pitchIn, float panIn) { 
+				sound.setPan(panIn, volumeIn);
+				sound.play(); 
+			}
+			
+			@Override
+			public void play(float volumeIn) { 
+				sound.setVolume(volumeIn);
+				sound.play(); 
+			}
 			
 			@Override
 			public void play() { sound.play(); }
