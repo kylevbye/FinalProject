@@ -35,6 +35,18 @@ public class HollowedRectangle extends Rectangle {
 		super.draw(batchIn, parentAlphaIn);
 		innerRectangle.draw(batchIn, parentAlphaIn);
 	}
+	
+	@Override
+	public void setPosition(float xIn, float yIn) {
+		super.setPosition(xIn, yIn);
+		//generateInnerRectangle();
+	}
+	
+	@Override
+	protected void positionChanged() {
+		super.positionChanged();
+		generateInnerRectangle();
+	}
 
 	/**
 	 * @param xIn

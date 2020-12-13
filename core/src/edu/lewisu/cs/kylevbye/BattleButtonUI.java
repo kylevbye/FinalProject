@@ -18,6 +18,7 @@ public class BattleButtonUI extends ScreenObject {
 	
 	private int selection;
 	private int gap;
+	private int maxOption;
 	private Image battleButton;
 	private Image battleButtonH;
 	private Image actButton;
@@ -31,6 +32,7 @@ public class BattleButtonUI extends ScreenObject {
 	
 	public int getSelection() { return selection; }
 	public int getGap() { return gap; }
+	public int getMaxOption() { return maxOption; }
 	public Image getBattleButton() { return battleButton; }
 	public Image getBattleButtonH() { return battleButtonH; }
 	public Image getActButton() { return actButton; }
@@ -43,7 +45,10 @@ public class BattleButtonUI extends ScreenObject {
 	///
 	
 	public void setSelection(int selectionIn) { 
-		if (selectionIn >= 0 && selectionIn <= 2) selection = selectionIn; 
+		if (selectionIn >= 0 && selectionIn <= maxOption) selection = selectionIn; 
+	}
+	public void setMaxOption(int maxOptionIn) {
+		if (maxOptionIn <=2 && maxOptionIn >= 0) maxOption = maxOptionIn; 
 	}
 	public void setGap(int gapIn) { gap = gapIn; }
 	
@@ -67,7 +72,7 @@ public class BattleButtonUI extends ScreenObject {
 		
 		placeButtons();
 		
-		if (battleButton.isVisible()) {
+		if (maxOption >= 0) {
 			
 			if (selection == ButtonConstants.FIGHT) {
 				battleButtonH.draw(batchIn, parentAlphaIn);
@@ -76,7 +81,7 @@ public class BattleButtonUI extends ScreenObject {
 			
 		}
 		
-		if (actButton.isVisible()) {
+		if (maxOption >= 1) {
 			
 			if (selection == ButtonConstants.ACT) {
 				actButtonH.draw(batchIn, parentAlphaIn);
@@ -85,7 +90,7 @@ public class BattleButtonUI extends ScreenObject {
 			
 		}
 		
-		if (itemButton.isVisible()) {
+		if (maxOption >= 2) {
 			
 			if (selection == ButtonConstants.ITEM) {
 				itemButtonH.draw(batchIn, parentAlphaIn);

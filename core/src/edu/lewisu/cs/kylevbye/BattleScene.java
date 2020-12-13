@@ -21,8 +21,10 @@ public class BattleScene {
 	private int WIDTH, HEIGHT;
 	private ArrayList<Drawable> drawables;
 	private boolean defending;
+	private AsgoreAttack currentAttack;
 	
 	private PlayerEntity player;
+	private AsgoreEntity asgore;
 	private BattleButtonUI buttonUI;
 	private Music asgoreIntro;
 	private Music asgoreBattle;
@@ -68,6 +70,14 @@ public class BattleScene {
 		soulSprites[6] = AssetManager.loadImage("soultypes/perseverance.png");
 		player = new PlayerEntity(soulSprites);
 		
+		//	Load Asgore
+		asgore = new AsgoreEntity(AssetManager.loadImage("asgore.png"));
+		asgore.setScale(.6f);
+		asgore.setPosition(
+				WIDTH/2-(asgore.getWidth()*asgore.getScaleX())/2-(28*asgore.getScaleX()), 
+				HEIGHT/2
+				);
+		
 		//	Button UI
 		Image[] buttons = new Image[6];
 		buttons[0] = AssetManager.loadImage("battlebuttons/fight.png");
@@ -83,22 +93,28 @@ public class BattleScene {
 		
 		//	BattleController
 		battleController = new BattleController(player, buttonUI);
+		AsgoreAttack.middleX = WIDTH/2;
+		AsgoreAttack.middleY = HEIGHT/3 + HEIGHT/30;
+		AsgoreAttack.borderThickness = 5f;
+		AsgoreAttack.player = player;
 		
 		//	Music
 		asgoreIntro = AssetManager.loadMusic("asgorePreBattle.mp3");
 		asgoreIntro.setLooping(false);
 		asgoreBattle = AssetManager.loadMusic("asgoreBattle.mp3");
+		asgoreBattle.setVolume(.3f);
+		
+		defending = true;
 		
 	}
 	
 	public void render() {
 		
-		defending = false;
-		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		buttonUI.draw(batch, 1f);
+		asgore.draw(batch, 1f);
 		
 		//	Game Logic
 		switch (stage) {
@@ -112,14 +128,35 @@ public class BattleScene {
 		
 		case BattleSceneConstants.FIRST_STAGE:
 			
+			if (!asgoreBattle.isPlaying()) AssetManager.addToSoundQueue(asgoreBattle);
+			
 			//	Handle Input
 			if (defending) {
-				battleController.handleSoul();
-				player.draw(batch, 1f);
+				
+				if (currentAttack == null) {
+					System.out.println("Attack start");
+					currentAttack = new AsgoreAttack(150, 150, 300);
+				}
+				
+				
+				if (currentAttack.isActive()) {
+					battleController.defend(currentAttack);
+					battleController.handleSoul();
+					currentAttack.draw(batch, 1f);
+					player.draw(batch, 1f);
+				}
+				else {
+					defending = false;
+					currentAttack.dispose();
+					currentAttack = null;
+				}
+				
 			}
 			else {
+				
 				if (buttonUI.getSelection() == -1) buttonUI.setSelection(0);
 				battleController.handleMenu();
+				
 			}
 			
 			break;
@@ -146,9 +183,9 @@ public class BattleScene {
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		counter = 0;
-		defending = false;
+		defending = true;
 		
-		stage = BattleSceneConstants.INITIAL_DIALOGUE;
+		stage = BattleSceneConstants.FIRST_STAGE;
 		
 		asgoreIntro.setPosition(0);
 		

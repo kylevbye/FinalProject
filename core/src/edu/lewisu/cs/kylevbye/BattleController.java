@@ -7,6 +7,13 @@ public class BattleController {
 	private PlayerEntity player;
 	private BattleButtonUI battleUI;
 	
+	public void defend(AsgoreAttack attackIn) {
+		
+		AsgoreAttack attack = attackIn;
+		attack.play();
+		
+	}
+	
 	public void handleMenu() {
 		
 		
@@ -22,7 +29,7 @@ public class BattleController {
 	
 	public void handleSoul() {
 		
-		float movementSpeed = 1f;
+		float movementSpeed = 2.5f;
 		
 		//	Movement
 		if (PlayerInput.w_down || PlayerInput.up_down) player.moveUp(movementSpeed);

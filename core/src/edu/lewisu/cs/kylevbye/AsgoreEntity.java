@@ -1,13 +1,10 @@
 package edu.lewisu.cs.kylevbye;
 
-public class PlayerEntity extends MobileScreenObject implements Entity {
-	
-	///
-	///	Field
-	///
-	
-	private Image[] soulSprites;
-	
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.g2d.Batch;
+
+public class AsgoreEntity extends MobileScreenObject implements Entity {
 	
 	private float health;
 	private float maxHealth;
@@ -16,7 +13,6 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	///	Getters
 	///
 	
-	public Image[] getSoulSprites() { return soulSprites; }
 	
 	@Override
 	public float getHealth() { return health; }
@@ -28,8 +24,6 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	///	Setters
 	///
 	
-	public void setSoulSprites(Image[] soulSpritesIn) { soulSprites = soulSpritesIn; }
-	
 	@Override
 	public void setHealth(float healthIn) { 
 		health = healthIn; 
@@ -37,6 +31,7 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 		if (health > maxHealth) health = maxHealth;
 	}
 	
+	@Override
 	public void setMaxHealth(float maxHealthIn) { maxHealth = maxHealthIn; }
 	
 	///
@@ -59,6 +54,7 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	///	Functions
 	///
 	
+	
 	@Override
 	public void attack(Entity otherIn, float damageIn) {
 		
@@ -73,22 +69,22 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 		
 	}
 	
-	public void selectSoulSprite(int soulSpriteIn) { 
-		
-		Image selectedSprite = soulSprites[soulSpriteIn];
-		setTextureRegion(selectedSprite.getTextureRegion()); 
-		setWidth(selectedSprite.getWidth());
-		setHeight(selectedSprite.getHeight());
-		
-	} 
+	
 	
 	///
 	///	Constructors
 	///
 	
-	public PlayerEntity(Image[] soulSprites) {
+	public AsgoreEntity(Image imageIn) {
 		
-		super(soulSprites[0]);
+		this(0f, 0f, imageIn);
+		
+	}
+	
+	public AsgoreEntity(float xIn, float yIn, Image imageIn) {
+		
+		super(imageIn);
+		setPosition(xIn, yIn);
 		
 	}
 	
@@ -98,11 +94,10 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	
 	public void dispose() {
 		
-		for (Image i : soulSprites) i.dispose();
 		setMaxHealth(100);
 		setHealth(maxHealth);
 		
 	}
-	
+
 
 }
