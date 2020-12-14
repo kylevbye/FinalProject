@@ -1,5 +1,6 @@
 package edu.lewisu.cs.kylevbye;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -42,6 +43,9 @@ public class Image extends Actor implements Disposable, Drawable {
 	///	Functions
 	///
 	public void draw(Batch batchIn, float parentAlphaIn) {
+		batchIn.enableBlending();
+		Color color = getColor();
+		batchIn.setColor(color.r, color.g, color.b, color.a * parentAlphaIn);
 		batchIn.draw(textureRegion, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 	}
 	

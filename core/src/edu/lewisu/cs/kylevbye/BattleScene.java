@@ -2,6 +2,7 @@ package edu.lewisu.cs.kylevbye;
 
 import java.awt.color.CMMException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
@@ -37,6 +39,7 @@ public class BattleScene {
 	private PlayerEntity player;
 	private AsgoreEntity asgore;
 	private BattleButtonUI buttonUI;
+	private PlayerUI playerUI;
 	private PNGAnimatedMobileScreenObject playerAttackAnim;
 	private Sound attackSlashSound;
 	private Sound asgoreHurtSound;
@@ -44,9 +47,12 @@ public class BattleScene {
 	private Music asgoreBattleMusic;
 	
 	private Label damageLabel;
+	private HealthBar asgoreHealthBar;
 	
 	private CameraEffect cameraShaker;
 	
+	private float asgoreDamage;
+	private float asgoreTrans;
 	private boolean played;
 	
 	public class BattleSceneConstants {
@@ -86,6 +92,8 @@ public class BattleScene {
 
 		counter = 0;
 		state = BattleSceneConstants.PLAN;
+		asgoreDamage = 0f;
+		asgoreTrans = 1f;
 		
 		cam = camIn;
 		batch = batchIn;
@@ -105,6 +113,7 @@ public class BattleScene {
 		soulSprites[5] = AssetManager.loadImage("soultypes/patience.png");
 		soulSprites[6] = AssetManager.loadImage("soultypes/perseverance.png");
 		player = new PlayerEntity(soulSprites);
+		player.setMaxHealth(100f);
 		
 		//	Load Asgore
 		asgore = new AsgoreEntity(AssetManager.loadImage("asgore.png"));
@@ -113,6 +122,8 @@ public class BattleScene {
 				WIDTH/2-(asgore.getWidth()*asgore.getScaleX())/2-(28*asgore.getScaleX()), 
 				HEIGHT/2
 				);
+		asgore.setMaxHealth(19999980f);
+		asgore.setHealth(Float.MAX_VALUE);
 		
 		//	Button UI
 		Image[] buttons = new Image[6];
@@ -127,10 +138,17 @@ public class BattleScene {
 		buttonUI.setY(HEIGHT/20);
 		buttonUI.setGap(WIDTH/15);
 		
+		//	Player UI
+		playerUI = new PlayerUI(
+				WIDTH/2, buttonUI.getY() + buttonUI.getHeight() + HEIGHT/100 , 
+				200, 15, player.getMaxHealth()
+				);
+		playerUI.setPosition(playerUI.getX()-playerUI.getWidth()/2, playerUI.getY());
+		
 		//	BattleController
 		battleController = new BattleController(player, buttonUI, this);
 		AsgoreAttack.middleX = WIDTH/2;
-		AsgoreAttack.middleY = HEIGHT/3 + HEIGHT/30;
+		AsgoreAttack.middleY = HEIGHT/3 + HEIGHT/10;
 		AsgoreAttack.borderThickness = 4f;
 		AsgoreAttack.player = player;
 		
@@ -160,6 +178,12 @@ public class BattleScene {
 		
 		//	Cmera Effects
 		cameraShaker = new CameraShake(cam, 50, (SpriteBatch)batch, new ShapeRenderer(), 10, 3);
+		
+		//	Health Bar
+		asgoreHealthBar = new HealthBar(WIDTH/2, playerAttackAnim.getY()+HEIGHT/10, 
+				WIDTH/2, HEIGHT/40, asgore.getHealth(), asgore.getMaxHealth(), Color.GREEN, Color.GRAY
+				);
+		asgoreHealthBar.setPosition(asgoreHealthBar.getX()-asgoreHealthBar.getWidth()/2, asgoreHealthBar.getY());
 	}
 	
 	public void render() {
@@ -168,11 +192,14 @@ public class BattleScene {
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		buttonUI.draw(batch, 1f);
-		asgore.draw(batch, 1f);
+		playerUI.update(player.getHealth());
+		playerUI.draw(batch, 1f);
 		
 		//	Game Logic
+		asgore.draw(batch, asgoreTrans);
 		
-		//if (player.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
+		if (player.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
+		if (asgore.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
 		
 		switch (stage) {
 		
@@ -189,6 +216,8 @@ public class BattleScene {
 			
 			//	Handle Input
 			if (state == BattleSceneConstants.DEFEND) {
+				
+				if (asgoreTrans > .1f) asgoreTrans -= .05f;
 				
 				if (currentAsgoreAttack == null) {
 					System.out.println("Defend start");
@@ -211,6 +240,8 @@ public class BattleScene {
 			}
 			else if (state == BattleSceneConstants.PLAN) {
 				
+				if (asgoreTrans <= 1f) asgoreTrans += .05f;
+				
 				if (buttonUI.getSelection() == -1) buttonUI.setSelection(0);
 				battleController.handleMenu();
 				
@@ -232,12 +263,24 @@ public class BattleScene {
 			else if (state == BattleSceneConstants.DAMAGE) {
 				 
 				if (counter == 1) {
+					damageLabel.setText("999999");
+					asgoreDamage = 999999f/68f;
 					cameraShaker.start();
 					AssetManager.addToSoundQueue(asgoreHurtSound);
 				}
 				
-				if (counter == 120) state = BattleSceneConstants.DEFEND;
+				if (counter < 70) {
+					asgore.absorbDamage(asgoreDamage);
+					asgoreHealthBar.setHealth(asgoreHealthBar.getHealth()-asgoreDamage);
+				}
 				
+				if (counter == 120) {
+					cameraShaker.play();
+					cameraShaker.updateCamera();
+					state = BattleSceneConstants.DEFEND;
+				}
+				
+				asgoreHealthBar.draw(batch, 1f);
 				damageLabel.draw(batch, 1f);
 				cameraShaker.play();
 				cameraShaker.updateCamera();
@@ -280,6 +323,10 @@ public class BattleScene {
 		buttonUI.setY(HEIGHT/20);
 		buttonUI.setGap(WIDTH/15);
 		
+		asgore.setHealth(Float.MAX_VALUE);
+		player.setHealth(Float.MAX_VALUE);
+		asgoreHealthBar.setHealth(Float.MAX_VALUE);
+		asgoreTrans = 1f;
 		
 	}
 	

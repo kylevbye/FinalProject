@@ -127,6 +127,8 @@ public class FinalProject extends ApplicationAdapter {
 		
 		PlayerInput.resetTempControls();
 		
+		
+		
 	}
 	
 	@Override

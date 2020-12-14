@@ -45,7 +45,7 @@ public class BattleButtonUI extends ScreenObject {
 	///
 	
 	public void setSelection(int selectionIn) { 
-		if (selectionIn >= 0 && selectionIn <= maxOption) selection = selectionIn; 
+		if (selectionIn >= -1 && selectionIn <= maxOption) selection = selectionIn; 
 	}
 	public void setMaxOption(int maxOptionIn) {
 		if (maxOptionIn <=2 && maxOptionIn >= 0) maxOption = maxOptionIn; 
