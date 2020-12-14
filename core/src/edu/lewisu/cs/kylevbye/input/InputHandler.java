@@ -141,6 +141,9 @@ public class InputHandler extends InputAdapter {
 			PlayerInput.rightWasPressed = true;
 			break;
 			
+		case Keys.Z:
+			PlayerInput.zWasPressed = true;
+			
 		}
 		
 		

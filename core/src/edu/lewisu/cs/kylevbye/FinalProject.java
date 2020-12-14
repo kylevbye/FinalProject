@@ -122,6 +122,7 @@ public class FinalProject extends ApplicationAdapter {
 			titleScene.reset();
 			loadingBattleScene.reset();
 			battleScene.reset();
+			gameOverScene.reset();
 		}
 		
 		PlayerInput.resetTempControls();

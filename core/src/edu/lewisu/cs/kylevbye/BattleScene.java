@@ -1,11 +1,22 @@
 package edu.lewisu.cs.kylevbye;
 
+import java.awt.color.CMMException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+
+import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraEffect;
+import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraShake;
 
 public class BattleScene {
 	
@@ -20,14 +31,21 @@ public class BattleScene {
 	private static AsgoreDialogue aDiag = new AsgoreDialogue();
 	private int WIDTH, HEIGHT;
 	private ArrayList<Drawable> drawables;
-	private boolean defending;
-	private AsgoreAttack currentAttack;
+	private int state;
+	private AsgoreAttack currentAsgoreAttack;
 	
 	private PlayerEntity player;
 	private AsgoreEntity asgore;
 	private BattleButtonUI buttonUI;
-	private Music asgoreIntro;
-	private Music asgoreBattle;
+	private PNGAnimatedMobileScreenObject playerAttackAnim;
+	private Sound attackSlashSound;
+	private Sound asgoreHurtSound;
+	private Music asgoreIntroMusic;
+	private Music asgoreBattleMusic;
+	
+	private Label damageLabel;
+	
+	private CameraEffect cameraShaker;
 	
 	private boolean played;
 	
@@ -43,13 +61,31 @@ public class BattleScene {
 		
 		//	Game Over
 		public static final int GAME_OVER = 6;
+		
+		//	States
+		public static final int ATTACK = 0;
+		public static final int DAMAGE = 1;
+		public static final int DEFEND = 2;
+		public static final int PLAN = 3;
 	
 	}
+	
+	///
+	///	Getters
+	///
+	
+	public Sound getAttackSlashSound() { return attackSlashSound; }
+	
+	///
+	///	Setters
+	///
+	
+	public void setState(int stateIn) { state = stateIn; }
 	
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 
 		counter = 0;
-		defending = false;
+		state = BattleSceneConstants.PLAN;
 		
 		cam = camIn;
 		batch = batchIn;
@@ -92,20 +128,38 @@ public class BattleScene {
 		buttonUI.setGap(WIDTH/15);
 		
 		//	BattleController
-		battleController = new BattleController(player, buttonUI);
+		battleController = new BattleController(player, buttonUI, this);
 		AsgoreAttack.middleX = WIDTH/2;
 		AsgoreAttack.middleY = HEIGHT/3 + HEIGHT/30;
-		AsgoreAttack.borderThickness = 5f;
+		AsgoreAttack.borderThickness = 4f;
 		AsgoreAttack.player = player;
 		
 		//	Music
-		asgoreIntro = AssetManager.loadMusic("asgorePreBattle.mp3");
-		asgoreIntro.setLooping(false);
-		asgoreBattle = AssetManager.loadMusic("asgoreBattle.mp3");
-		asgoreBattle.setVolume(.3f);
+		asgoreIntroMusic = AssetManager.loadMusic("asgorePreBattle.mp3");
+		asgoreIntroMusic.setLooping(false);
+		asgoreBattleMusic = AssetManager.loadMusic("asgoreBattle.mp3");
+		asgoreBattleMusic.setVolume(.3f);
 		
-		defending = true;
+		//	Attack sound
+		attackSlashSound = AssetManager.loadSound("slash.mp3");
 		
+		//	Asgore hurt
+		asgoreHurtSound = AssetManager.loadSound("asgoreDamaged.mp3");
+		
+		//	Player Attack
+		playerAttackAnim = AssetManager.loadPNGAnimatedSprite("knifeslash", "knife", 6);
+		playerAttackAnim.setPosition(WIDTH/2-playerAttackAnim.getWidth()/2, asgore.getY()+HEIGHT/4f);
+		playerAttackAnim.setScale(2.3f);
+		playerAttackAnim.setFrameDelay(9);
+		
+		//	Dmg Label
+		LabelStyle damageSty = new LabelStyle(new BitmapFont(), Color.WHITE);
+		damageSty.font = new BitmapFont(Gdx.files.internal("fonts/undertaleDamage.fnt"));
+		damageLabel = new Label("999999",damageSty);
+		damageLabel.setPosition(WIDTH/2-damageLabel.getWidth()/2, playerAttackAnim.getY()+HEIGHT/8);
+		
+		//	Cmera Effects
+		cameraShaker = new CameraShake(cam, 50, (SpriteBatch)batch, new ShapeRenderer(), 10, 3);
 	}
 	
 	public void render() {
@@ -117,45 +171,77 @@ public class BattleScene {
 		asgore.draw(batch, 1f);
 		
 		//	Game Logic
+		
+		//if (player.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
+		
 		switch (stage) {
 		
 		case BattleSceneConstants.INITIAL_DIALOGUE:
 			
-			if (counter == 0) { AssetManager.addToSoundQueue(asgoreIntro); }
+			if (counter == 0) { AssetManager.addToSoundQueue(asgoreIntroMusic); }
 			if (counter == 1500) stage = BattleSceneConstants.FIRST_STAGE;
 			
 			break;
 		
 		case BattleSceneConstants.FIRST_STAGE:
 			
-			if (!asgoreBattle.isPlaying()) AssetManager.addToSoundQueue(asgoreBattle);
+			if (!asgoreBattleMusic.isPlaying()) AssetManager.addToSoundQueue(asgoreBattleMusic);
 			
 			//	Handle Input
-			if (defending) {
+			if (state == BattleSceneConstants.DEFEND) {
 				
-				if (currentAttack == null) {
-					System.out.println("Attack start");
-					currentAttack = new AsgoreAttack(150, 150, 300);
+				if (currentAsgoreAttack == null) {
+					System.out.println("Defend start");
+					currentAsgoreAttack = new AsgoreAttack(150, 150, 300);
 				}
 				
 				
-				if (currentAttack.isActive()) {
-					battleController.defend(currentAttack);
+				if (currentAsgoreAttack.isActive()) {
+					battleController.defend(currentAsgoreAttack);
 					battleController.handleSoul();
-					currentAttack.draw(batch, 1f);
+					currentAsgoreAttack.draw(batch, 1f);
 					player.draw(batch, 1f);
 				}
 				else {
-					defending = false;
-					currentAttack.dispose();
-					currentAttack = null;
+					state = BattleSceneConstants.PLAN;
+					currentAsgoreAttack.dispose();
+					currentAsgoreAttack = null;
 				}
 				
 			}
-			else {
+			else if (state == BattleSceneConstants.PLAN) {
 				
 				if (buttonUI.getSelection() == -1) buttonUI.setSelection(0);
 				battleController.handleMenu();
+				
+			}
+			else if (state == BattleSceneConstants.ATTACK) {
+				
+				if (playerAttackAnim.isOver()) { 
+					playerAttackAnim.resetFrameCount();
+					state = BattleSceneConstants.DAMAGE;
+					counter = 0;
+				}
+				else {
+					playerAttackAnim.play();
+					playerAttackAnim.draw(batch, 1f);
+				}
+					
+			}
+			
+			else if (state == BattleSceneConstants.DAMAGE) {
+				 
+				if (counter == 1) {
+					cameraShaker.start();
+					AssetManager.addToSoundQueue(asgoreHurtSound);
+				}
+				
+				if (counter == 120) state = BattleSceneConstants.DEFEND;
+				
+				damageLabel.draw(batch, 1f);
+				cameraShaker.play();
+				cameraShaker.updateCamera();
+				
 				
 			}
 			
@@ -163,8 +249,8 @@ public class BattleScene {
 			
 		case BattleSceneConstants.GAME_OVER:
 			
-			asgoreBattle.pause();
-			asgoreIntro.pause();
+			asgoreBattleMusic.pause();
+			asgoreIntroMusic.pause();
 			FinalProject.scene = FinalProject.SceneConstants.GAMEOVER;
 			break;
 			
@@ -183,20 +269,17 @@ public class BattleScene {
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		counter = 0;
-		defending = true;
+		state = BattleSceneConstants.PLAN;
 		
 		stage = BattleSceneConstants.FIRST_STAGE;
 		
-		asgoreIntro.setPosition(0);
+		asgoreIntroMusic.setPosition(0f);
+		asgoreBattleMusic.setPosition(0f);
 		
 		buttonUI.setX(WIDTH/20);
 		buttonUI.setY(HEIGHT/20);
 		buttonUI.setGap(WIDTH/15);
 		
-		// Music
-		//asgoreIntro = AssetManager.loadMusic("asgorePreBattle.mp3");
-		//asgoreIntro.setLooping(false);
-		//asgoreBattle = AssetManager.loadMusic("asgoreBattle.mp3");
 		
 	}
 	

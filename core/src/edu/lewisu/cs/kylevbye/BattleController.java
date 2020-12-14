@@ -6,6 +6,7 @@ public class BattleController {
 	
 	private PlayerEntity player;
 	private BattleButtonUI battleUI;
+	private BattleScene scene;
 	
 	public void defend(AsgoreAttack attackIn) {
 		
@@ -22,6 +23,13 @@ public class BattleController {
 		}
 		if (PlayerInput.dWasPressed || PlayerInput.rightWasPressed) {
 			battleUI.setSelection(battleUI.getSelection()+1);
+		}
+		if (PlayerInput.zWasPressed) {
+			if (battleUI.getSelection() == BattleButtonUI.ButtonConstants.FIGHT) {
+				battleUI.setSelection(-1);
+				scene.setState(BattleScene.BattleSceneConstants.ATTACK);
+				AssetManager.addToSoundQueue(scene.getAttackSlashSound());
+			}
 		}
 		
 		
@@ -40,9 +48,12 @@ public class BattleController {
 		
 	}
 
-	public BattleController(PlayerEntity playerIn, BattleButtonUI battleUIIn) {
+	public BattleController(
+			PlayerEntity playerIn, BattleButtonUI battleUIIn, BattleScene sceneIn
+			) {
 		player = playerIn;
 		battleUI = battleUIIn;
+		scene = sceneIn;
 	}
 
 }

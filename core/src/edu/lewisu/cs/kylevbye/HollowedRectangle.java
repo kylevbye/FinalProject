@@ -37,12 +37,6 @@ public class HollowedRectangle extends Rectangle {
 	}
 	
 	@Override
-	public void setPosition(float xIn, float yIn) {
-		super.setPosition(xIn, yIn);
-		//generateInnerRectangle();
-	}
-	
-	@Override
 	protected void positionChanged() {
 		super.positionChanged();
 		generateInnerRectangle();

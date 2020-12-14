@@ -193,7 +193,10 @@ public class GameOverScene {
 		++counter;
 		
 		//	Check End
-		if (counter == 1600) FinalProject.scene = FinalProject.SceneConstants.TITLE;
+		if (counter == 1600) {
+			FinalProject.scene = FinalProject.SceneConstants.TITLE;
+			gameOverMusic.pause();
+		}
 		
 	}
 	
@@ -206,6 +209,26 @@ public class GameOverScene {
 		soulShatterSound.dispose();
 		asgoreDialogue.dispose();
 		gameOverMusic.dispose();
+		
+	}
+	
+	public void reset() {
+		
+		counter = 0;
+		finalOpaq = 1.0f;
+		
+		//	Manually set soul shards
+		float soulCenterX = soul.getX(); float soulCenterY = soul.getY();
+		for (int i = 0; i<soulShards.length; ++i) {
+			soulShards[i] = new MobileScreenObject(AssetManager.loadImage("soulShard.png"));
+			soulShards[i].setPosition(soulCenterX, soulCenterY);
+			soulShards[i].centerOrigin();
+			soulShards[i].setAcceleration(.9f);
+			soulShards[i].setDeceleration(.8f);
+		}
+		
+		gameOverMusic.setPosition(0f);
+		gameOverMusic.setVolume(.2f);
 		
 	}
 	
@@ -270,7 +293,7 @@ public class GameOverScene {
 			});
 		}
 		
-		if (counter > 1300) gameOverMusic.setVolume(gameOverMusic.getVolume()-.0008f);
+		if (counter > 1300) gameOverMusic.setVolume(gameOverMusic.getVolume()-.0001f);
 		
 		
 	}

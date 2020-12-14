@@ -36,8 +36,6 @@ public class AsgoreAttack {
 	
 	public boolean isActive() {
 		
-		System.out.println("E");
-		
 		return isActive;
 		
 	}
@@ -47,7 +45,6 @@ public class AsgoreAttack {
 		restrictor.handleEdges();
 		
 		if (counter == length) {
-			System.out.println("FFF");
 			isActive = false;
 		}
 		

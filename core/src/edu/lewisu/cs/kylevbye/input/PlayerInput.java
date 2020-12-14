@@ -48,6 +48,7 @@ public class PlayerInput {
 	public static boolean leftWasPressed = false;
 	public static boolean downWasPressed = false;
 	public static boolean rightWasPressed = false;
+	public static boolean zWasPressed = false;
 	
 	///
 	///	Functions
@@ -70,6 +71,7 @@ public class PlayerInput {
 		leftWasPressed = false;
 		downWasPressed = false;
 		rightWasPressed = false;
+		zWasPressed = false;
 		
 	}
 	

@@ -165,7 +165,10 @@ public class PNGAnimatedMobileScreenObject extends MobileScreenObject {
 	
 	public void incrementFrameCount() { ++frameCount; }
 	
-	public void resetFrameCount() { setFrameCount(0); }
+	public void resetFrameCount() { 
+		setCounter(0);
+		setFrameCount(0); 
+	}
 	
 	@Override
 	public void draw(Batch batchIn, float parentAlphaIn) {
@@ -180,9 +183,17 @@ public class PNGAnimatedMobileScreenObject extends MobileScreenObject {
 			
 			if (frameCount == frames.size()-1) frameCount = 0;
 			else incrementFrameCount();
+			
+			System.out.println(frameCount);
 		}
 		
 		incrementCounter();
+	}
+	
+	public boolean isOver() {
+		
+		return frames.size()-1 == frameCount;
+		
 	}
 	
 	///
