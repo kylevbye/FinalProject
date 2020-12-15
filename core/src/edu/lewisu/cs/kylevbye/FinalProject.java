@@ -37,6 +37,7 @@ public class FinalProject extends ApplicationAdapter {
 	LoadingBattleScene loadingBattleScene;
 	BattleScene battleScene;
 	GameOverScene gameOverScene;
+	GameWinScene gameWinScene;
 	
 	
 	public final class SceneConstants {
@@ -45,6 +46,7 @@ public class FinalProject extends ApplicationAdapter {
 		public static final int LOADING_BATTLE = 1;
 		public static final int BATTLE = 2;
 		public static final int GAMEOVER = 3;
+		public static final int GAMEWIN = 4;
 		
 	}
 	
@@ -76,6 +78,9 @@ public class FinalProject extends ApplicationAdapter {
 		//	GameOver Scene
 		gameOverScene = new GameOverScene();
 		gameOverScene.create((OrthographicCamera)cam, batch);
+		
+		gameWinScene = new GameWinScene();
+		gameWinScene.create((OrthographicCamera)cam, batch);
 		
 		
 	}
@@ -111,6 +116,10 @@ public class FinalProject extends ApplicationAdapter {
 		case SceneConstants.GAMEOVER:
 			gameOverScene.render();
 			break;
+		
+		case SceneConstants.GAMEWIN:
+			gameWinScene.render();
+			break;
 			
 		}
 		
@@ -123,6 +132,7 @@ public class FinalProject extends ApplicationAdapter {
 			loadingBattleScene.reset();
 			battleScene.reset();
 			gameOverScene.reset();
+			gameWinScene.reset();
 		}
 		
 		PlayerInput.resetTempControls();

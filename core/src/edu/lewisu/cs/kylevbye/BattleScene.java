@@ -1,8 +1,6 @@
 package edu.lewisu.cs.kylevbye;
 
-import java.awt.color.CMMException;
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -13,16 +11,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraEffect;
 import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraShake;
 
+
 public class BattleScene {
 	
 	private int counter;
+	private int rotationCounter;
 	
 	private OrthographicCamera cam;
 	private Batch batch;
@@ -36,6 +35,11 @@ public class BattleScene {
 	private int state;
 	private AsgoreAttack currentAsgoreAttack;
 	
+	//
+	//	Local Assets
+	//
+	
+	private MobileScreenObject[] souls;
 	private PlayerEntity player;
 	private AsgoreEntity asgore;
 	private BattleButtonUI buttonUI;
@@ -45,12 +49,10 @@ public class BattleScene {
 	private Sound asgoreHurtSound;
 	private Music asgoreIntroMusic;
 	private Music asgoreBattleMusic;
-	
 	private Label damageLabel;
 	private HealthBar asgoreHealthBar;
 	
 	private CameraEffect cameraShaker;
-	
 	private float asgoreDamage;
 	private float asgoreTrans;
 	private boolean played;
@@ -67,6 +69,9 @@ public class BattleScene {
 		
 		//	Game Over
 		public static final int GAME_OVER = 6;
+		
+		//	Game Win
+		public static final int GAME_WIN = 7;
 		
 		//	States
 		public static final int ATTACK = 0;
@@ -125,6 +130,14 @@ public class BattleScene {
 		asgore.setMaxHealth(19999980f);
 		asgore.setHealth(Float.MAX_VALUE);
 		
+		//	Souls
+		souls = new MobileScreenObject[6];
+		for (int i = 0; i<souls.length; ++i) {
+			souls[i] = loadSoul(WIDTH/2, HEIGHT/2, null);
+			setSoulPosition(souls[i], i);
+			setSoulColor(souls[i], i);
+		}
+		
 		//	Button UI
 		Image[] buttons = new Image[6];
 		buttons[0] = AssetManager.loadImage("battlebuttons/fight.png");
@@ -177,7 +190,7 @@ public class BattleScene {
 		damageLabel.setPosition(WIDTH/2-damageLabel.getWidth()/2, playerAttackAnim.getY()+HEIGHT/8);
 		
 		//	Cmera Effects
-		cameraShaker = new CameraShake(cam, 50, (SpriteBatch)batch, new ShapeRenderer(), 10, 3);
+		cameraShaker = new CameraShake(cam, 30, (SpriteBatch)batch, new ShapeRenderer(), 10, 3);
 		
 		//	Health Bar
 		asgoreHealthBar = new HealthBar(WIDTH/2, playerAttackAnim.getY()+HEIGHT/10, 
@@ -191,6 +204,17 @@ public class BattleScene {
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
+		for (int i = 0; i<souls.length; ++i) {
+			
+			float x = (float)Math.cos(Math.toRadians(rotationCounter+i*60f))*2f;
+			float y = (float)Math.sin(Math.toRadians(rotationCounter+i*60f))*2f;
+			
+			System.out.println(x + " " + y);
+			souls[i].move(x,y);
+			souls[i].draw(batch, asgoreTrans);
+			
+		}
+		
 		buttonUI.draw(batch, 1f);
 		playerUI.update(player.getHealth());
 		playerUI.draw(batch, 1f);
@@ -199,7 +223,7 @@ public class BattleScene {
 		asgore.draw(batch, asgoreTrans);
 		
 		if (player.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
-		if (asgore.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
+		if (asgore.getHealth() == 0) stage = BattleSceneConstants.GAME_WIN;
 		
 		switch (stage) {
 		
@@ -229,6 +253,7 @@ public class BattleScene {
 					battleController.defend(currentAsgoreAttack);
 					battleController.handleSoul();
 					currentAsgoreAttack.draw(batch, 1f);
+					player.getColor().b = 1;
 					player.draw(batch, 1f);
 				}
 				else {
@@ -276,7 +301,6 @@ public class BattleScene {
 				
 				if (counter == 120) {
 					cameraShaker.play();
-					cameraShaker.updateCamera();
 					state = BattleSceneConstants.DEFEND;
 				}
 				
@@ -289,6 +313,14 @@ public class BattleScene {
 			}
 			
 			break;
+			
+		case BattleSceneConstants.GAME_WIN:
+			
+			asgoreBattleMusic.pause();
+			asgoreIntroMusic.pause();
+			FinalProject.scene = FinalProject.SceneConstants.GAMEWIN;
+			break;
+			
 			
 		case BattleSceneConstants.GAME_OVER:
 			
@@ -303,6 +335,7 @@ public class BattleScene {
 		for (Drawable d : drawables) AssetManager.getRenderQueue().add(d);
 		
 		++counter;
+		++rotationCounter;
 		
 	}
 	
@@ -329,6 +362,67 @@ public class BattleScene {
 		asgoreTrans = 1f;
 		
 	}
+	
+	///
+	///	Helpers
+	///
+	
+	private MobileScreenObject loadSoul(float xIn, float yIn, Color colorIn) {
+		MobileScreenObject soul = new MobileScreenObject(AssetManager.loadImage("monsterSoul.png"));
+		
+		if (colorIn != null) soul.setColor(colorIn);
+		soul.setPosition(xIn-soul.getWidth()/2, yIn-soul.getHeight()/2);
+		
+		return soul;
+	}
+	
+	private void setSoulPosition(MobileScreenObject soul, int soulIndex) {
+		
+		float x, y;
+		
+		for (int i = 0; i<60*soulIndex; ++i) {
+			x = (float)Math.cos(Math.toRadians(i))*2f; 
+			y = (float)Math.sin(Math.toRadians(i))*2f;
+			soul.move(x, y);
+		}
+		
+	}
+	
+	private void setSoulColor(ScreenObject soul, int soulIndex) {
+		
+		switch (soulIndex) {
+		
+		case 0:
+			soul.setColor(Color.ORANGE);
+			break;
+			
+		case 1:
+			soul.setColor(Color.BLUE);
+			break;
+			
+		case 2:
+			soul.setColor(Color.CYAN);
+			break;
+			
+		case 3:
+			soul.setColor(Color.PURPLE);
+			break;
+			
+		case 4:
+			soul.setColor(Color.YELLOW);
+			break;
+			
+		case 5:
+			soul.setColor(0,100f/255f,0,1);
+			break;
+			
+		}
+		
+	}	
+	
+	///
+	///	Destructor
+	///
 	
 	public void dispose() {
 		
