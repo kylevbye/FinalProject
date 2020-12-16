@@ -56,6 +56,7 @@ public class BattleScene {
 	private Music asgoreBattleMusic;
 	private Label damageLabel;
 	private Label cheatLabel;
+	private Label skipLabel;
 	private HealthBar asgoreHealthBar;
 	
 	private boolean cheatMode;
@@ -230,6 +231,10 @@ public class BattleScene {
 		cheatLabel = new Label("CHEAT", cheatStyle);
 		cheatLabel.setPosition(WIDTH-cheatLabel.getWidth(), HEIGHT-cheatLabel.getHeight());
 		
+		//	SkipLabel
+		skipLabel = new Label("Z to Skip...", damageSty);
+		skipLabel.setPosition(0, 0);
+		
 		AsgoreAttack.player = player;
 		AsgoreAttackFactory.player = player;
 		
@@ -255,9 +260,11 @@ public class BattleScene {
 			
 			for (int i = 0; i<souls.length; ++i) souls[i].draw(batch, asgoreTrans);
 			asgore.draw(batch, asgoreTrans);
+			skipLabel.draw(batch, 1f);
 			
 			if (counter == 0) { AssetManager.addToSoundQueue(asgoreIntroMusic); }
-			if (counter == 1550) {
+			if (counter == 1550 || PlayerInput.zWasPressed) {
+				counter = 1550;
 				asgoreIntroMusic.stop();
 				stage = BattleSceneConstants.FIRST_STAGE;
 			}
@@ -346,6 +353,7 @@ public class BattleScene {
 				if (counter == 1) {
 					damageLabel.setText("999999");
 					asgoreDamage = 999999f/68f;
+					if (cheatMode) asgoreDamage = 999999f;
 					cameraShaker.start();
 					AssetManager.addToSoundQueue(asgoreHurtSound);
 				}

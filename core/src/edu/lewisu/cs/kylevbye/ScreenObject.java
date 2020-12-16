@@ -23,6 +23,7 @@ public class ScreenObject extends Image implements Collidable {
 	///
 	///	Fields
 	///
+	
 	protected boolean flippedX, flippedY;
 	protected Polygon boundingPolygon;
 	
