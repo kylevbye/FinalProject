@@ -12,6 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Disposable;
 
+/**
+ * This scene is the first thing you are exposed to when
+ * you boot up the game.
+ * @author	Kyle V Bye
+ *
+ */
 public class TitleScene implements Disposable {
 	
 	private int WIDTH, HEIGHT;
@@ -21,7 +27,16 @@ public class TitleScene implements Disposable {
 	private Label titleLabel;
 	private LabelStyle titleStyle;
 	private SoundLabel startLabel;
+	private Label insLabel;
 	
+	///
+	///	Functions
+	///
+	/**
+	 * Set up the scene.
+	 * @param	camIn	cam to play the scene
+	 * @param	batchIn	batch to draw the scene on
+	 */
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 		
 		drawables = new ArrayList<Drawable>();
@@ -53,8 +68,16 @@ public class TitleScene implements Disposable {
 			}
 		);
 		
+		///	Instructions
+		insLabel = new Label("WASD/Arrow Keys to move\nZ to fight\nClick \"Start\" to start.", titleStyle);
+		insLabel.setColor(Color.RED);
+		
+		
 	}
 	
+	/**
+	 * Draw the scene.
+	 */
 	public void render() {
 		
 		WIDTH = Gdx.graphics.getWidth();
@@ -68,12 +91,17 @@ public class TitleScene implements Disposable {
 		
 		titleLabel.setPosition(WIDTH/2 - titleLabel.getWidth()/2, HEIGHT - HEIGHT/7);
 		
-		for (Drawable d : drawables) AssetManager.getRenderQueue().add(d);
+		for (Drawable d : drawables) d.draw(batch, 1f);
 		titleLabel.draw(batch, 1.f); 
 		startLabel.draw(batch, 1.f);
+		insLabel.draw(batch, 1f);
 		
 	}
 	
+	/**
+	 * Doesn't really do anything here since
+	 * everything is static.
+	 */
 	public void reset() {
 		
 		WIDTH = Gdx.graphics.getWidth();
@@ -81,8 +109,15 @@ public class TitleScene implements Disposable {
 		
 	}
 	
+	///
+	///	Destructor
+	///
+	
+	/**
+	 * Clean up
+	 */
 	public void dispose() {
-		
+		startLabel.dispose();
 	}
 
 }

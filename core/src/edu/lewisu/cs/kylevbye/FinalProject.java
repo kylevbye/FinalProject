@@ -99,17 +99,14 @@ public class FinalProject extends ApplicationAdapter {
 		switch (scene) {
 		
 		case SceneConstants.TITLE:
-			//titleScene.reset();
 			titleScene.render();
 			break;
 			
 		case SceneConstants.LOADING_BATTLE:
-			//loadingBattleScene.reset();
 			loadingBattleScene.render();
 			break;
 			
 		case SceneConstants.BATTLE:
-			//battleScene.reset();
 			battleScene.render();
 			break;
 			
@@ -141,22 +138,6 @@ public class FinalProject extends ApplicationAdapter {
 		
 	}
 	
-	@Override
-	public void resize(int width, int height) {
-		
-		float newAspectRatio = (float)width/(float)height;
-		
-		Vector2 size = Scaling.fit.apply(640, 480, width, height);
-		viewPort = new Rectangle();
-		viewPort.x = (int)(width - size.x) / 2;
-		viewPort.y = (int)(height - size.y) / 2;
-		viewPort.width = size.x;
-		viewPort.height = size.y;
-		
-		
-		Gdx.gl.glViewport((int)viewPort.x, (int)viewPort.y, (int)viewPort.width, (int)viewPort.height);
-		
-	}
 	
 	@Override
 	public void dispose () {

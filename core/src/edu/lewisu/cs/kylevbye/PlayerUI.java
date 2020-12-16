@@ -9,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
+/**
+ * This class holds the healthbar you see in the game.
+ * @author	Kyle V Bye
+ */
 public class PlayerUI extends Actor {
 
 	private Label hpLabel, healthLabel;
@@ -64,6 +68,10 @@ public class PlayerUI extends Actor {
 		
 	}
 	
+	/**
+	 * Updates the health bar based on the health values provided
+	 * @param	newHealth	new health value
+	 */
 	public void update(float newHealth) {
 		healthBar.setHealth(newHealth);
 		String labelStr = String.format("%d/%d", (int)healthBar.getHealth(), (int)healthBar.getMaxHealth());

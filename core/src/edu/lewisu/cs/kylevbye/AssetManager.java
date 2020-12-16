@@ -22,7 +22,7 @@ public class AssetManager {
 	///	Volumne
 	///
 	
-	public static float volume = 0.1f;
+	public static float volume = 0.5f;
 	
 	///
 	///	Fields

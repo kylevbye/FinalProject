@@ -13,10 +13,15 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+/**
+ * This scene is supposed to emulate
+ * Undertale's official game over screen.
+ * 
+ * @author	Kyle V Bye
+ */
 public class GameOverScene {
 	
 	private int counter;
-	
 	private int WIDTH, HEIGHT;
 	private OrthographicCamera cam;
 	private Batch batch;
@@ -43,6 +48,12 @@ public class GameOverScene {
 	///	Functions
 	///
 	
+	/**
+	 * Creates the scene to display the game over scene.
+	 * 
+	 * @param	camIn	cam to play the scene
+	 * @param	batchIn	batch to draw the scene on
+	 */
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 		
 		counter = 0;
@@ -100,6 +111,9 @@ public class GameOverScene {
 		
 	}
 	
+	/**
+	 * Draws the scene to the screen.
+	 */
 	public void render() {
 		
 		WIDTH = Gdx.graphics.getWidth();
@@ -195,11 +209,14 @@ public class GameOverScene {
 		//	Check End
 		if (counter == 1600) {
 			FinalProject.scene = FinalProject.SceneConstants.TITLE;
-			gameOverMusic.pause();
+			gameOverMusic.stop();
 		}
 		
 	}
 	
+	/**
+	 * Memory clean up
+	 */
 	public void dispose() {
 		
 		soul.dispose();
@@ -212,6 +229,9 @@ public class GameOverScene {
 		
 	}
 	
+	/**
+	 * Resets the scene to be played again.
+	 */
 	public void reset() {
 		
 		counter = 0;
@@ -236,6 +256,9 @@ public class GameOverScene {
 	///	Helpers
 	///
 	
+	/*
+	 * Times the sounds to play at the appropriate time.
+	 */
 	private void processSounds(int counterIn) {
 		
 		if (counter == 13) { 
@@ -268,8 +291,10 @@ public class GameOverScene {
 			AssetManager.getSoundQueue().add(new Playable() {
 				public void play() { gameOverMusic.play(); }
 				public void play(float volumeIn) { 
-					gameOverMusic.setVolume(volumeIn*gameOverMusic.getVolume()); 
-					gameOverMusic.play(); 
+					try {
+						play();
+					}
+					catch (Exception e) {}
 				}
 				public void play(float volumeIn, float pitchIn, float panIn) { 
 					gameOverMusic.setVolume(volumeIn); 

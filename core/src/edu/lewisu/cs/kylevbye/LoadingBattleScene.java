@@ -11,22 +11,35 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
- * @author byekv
- *
+ * This scene is simulating Undertale's battle start
+ * sequence.
+ * 
+ * @author Kyle V Bye
  */
 public class LoadingBattleScene {
 	
 	private int counter;
-	
 	private OrthographicCamera cam;
 	private Batch batch;
-	
 	private int WIDTH, HEIGHT;
+	
+	///
+	///	Local Assets
+	///
 	
 	private MobileScreenObject soulSprite;
 	private Sound battleStartSound;
 	private PNGAnimatedMobileScreenObject knifeAnimation;
 	
+	///
+	///	Functions
+	///
+	
+	/**
+	 * Sets the scene up.
+	 * @param	camIn	cam to play the scene
+	 * @param	batchIn	batch to draw the scene on
+	 */
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 		
 		counter = 0;
@@ -49,6 +62,9 @@ public class LoadingBattleScene {
 		
 	}
 	
+	/**
+	 * Draws the scene to the screen.
+	 */
 	public void render() {
 		
 		WIDTH = Gdx.graphics.getWidth();
@@ -84,6 +100,9 @@ public class LoadingBattleScene {
 
 	}
 	
+	/**
+	 * Resets the scene to be played again.
+	 */
 	public void reset() {
 		
 		counter = 0;
@@ -96,6 +115,13 @@ public class LoadingBattleScene {
 		
 	}
 	
+	///
+	///	Destructor
+	///
+	
+	/**
+	 * Clean up
+	 */
 	public void dispose() {
 		
 		soulSprite.dispose();

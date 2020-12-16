@@ -3,6 +3,13 @@ package edu.lewisu.cs.kylevbye;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * This class holds two Rectangles to resemble
+ * a health bar.
+ * 
+ * @author	Kyle V Bye
+ *
+ */
 public class HealthBar extends Rectangle {
 	
 	private Color healthRectangleColor;
@@ -59,6 +66,21 @@ public class HealthBar extends Rectangle {
 	///	Constructors
 	///
 	
+	/**
+	 * Sets up the healthbars based on the bounds provided
+	 * along with the health values associated. healthColor resembles
+	 * the health it self and barColor resembles the color of the bar.
+	 * In other words, healthColor is healthy; barColor is not healthy.
+	 * 
+	 * @param 	xIn	x coordinate
+	 * @param 	yIn	y coordinate
+	 * @param 	widthIn	width
+	 * @param 	heightIn	height
+	 * @param 	healthIn	health
+	 * @param 	maxHealthIn	maxhealth possible
+	 * @param 	healthColorIn	health color
+	 * @param 	barColorIn	color of the bar itself
+	 */
 	public HealthBar(float xIn, float yIn, float widthIn, float heightIn, float healthIn, 
 			float maxHealthIn, Color healthColorIn, Color barColorIn) {
 		super(xIn, yIn, widthIn, heightIn, barColorIn);
@@ -72,7 +94,11 @@ public class HealthBar extends Rectangle {
 	///	Helpers
 	///
 	
-	public void generateHealthRectangle() {
+	/**
+	 * Reforms the health rectangle. Needed if the health or the size of the bar
+	 * has changed.
+	 */
+	private void generateHealthRectangle() {
 		
 		if (healthRectangle != null) healthRectangle.dispose();
 		
@@ -91,6 +117,9 @@ public class HealthBar extends Rectangle {
 	///	Destructors
 	///
 	
+	/**
+	 * clean up
+	 */
 	public void dispose() {
 		
 		super.dispose();

@@ -3,12 +3,12 @@
  */
 package edu.lewisu.cs.kylevbye;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
- * @author byekv
- *
+ * This class holds the FIGHT, ACT, and 
+ * ITEM options that are drawn to the screen.
+ * @author	Kyle V Bye
  */
 public class BattleButtonUI extends ScreenObject {
 	
@@ -55,6 +55,11 @@ public class BattleButtonUI extends ScreenObject {
 	///
 	///	Constants
 	///
+	
+	/**
+	 * Constants that reflect the options
+	 * available.
+	 */
 	public class ButtonConstants {
 		
 		public static final int FIGHT = 0;
@@ -101,6 +106,9 @@ public class BattleButtonUI extends ScreenObject {
 		
 	}
 	
+	/*
+	 * Places buttons in the GUI.
+	 */
 	public void placeButtons() {
 		
 		float UIx = getX();
@@ -118,6 +126,9 @@ public class BattleButtonUI extends ScreenObject {
 		calculateBounds();
 	}
 	
+	/**
+	 * Calculates the width and height of the UI;
+	 */
 	public void calculateBounds() {
 		
 		float width = itemButton.getX() + itemButton.getWidth();
@@ -133,7 +144,9 @@ public class BattleButtonUI extends ScreenObject {
 	///
 
 	/**
-	 * @param imageIn
+	 * Creates the GUI with the button sprites
+	 * provided.
+	 * @param	imagesIn	buttonSprites
 	 */
 	public BattleButtonUI(Image[] imagesIn) {
 		

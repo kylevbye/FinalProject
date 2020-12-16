@@ -4,6 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * This class is responsible for managing a ScreenObject
+ * within a certain bounds.
+ * 
+ * @author	Kyle V Bye
+ */
 public class EdgeHandler {
 	
 	///
@@ -78,7 +84,7 @@ public class EdgeHandler {
 	///	Functions
 	///
 	
-	public void lock(int axisIn) {
+	private void lock(int axisIn) {
 		
 		float x = controlledObject.getX();
 		float y = controlledObject.getY();
@@ -101,7 +107,7 @@ public class EdgeHandler {
 		
 	}
 	
-	public void wrap(int axisIn) {
+	private void wrap(int axisIn) {
 		
 		float x = controlledObject.getX();
 		float y = controlledObject.getY();
@@ -124,7 +130,7 @@ public class EdgeHandler {
 		
 	}
 	
-	public void pan(int axisIn) {
+	private void pan(int axisIn) {
 		
 		float x = controlledObject.getX();
 		float y = controlledObject.getY();
@@ -164,6 +170,10 @@ public class EdgeHandler {
 		
 	}
 	
+	/**
+	 * Applies the strategies set to the screen object
+	 * that is set.
+	 */
 	public void handleEdges() {
 		
 		switch (horizontalStrategy) {
@@ -200,7 +210,7 @@ public class EdgeHandler {
 		
 	}
 	
-	public void updateCamera() {
+	private void updateCamera() {
 		
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
@@ -240,5 +250,6 @@ public class EdgeHandler {
 		setBorder(borderIn);
 		
 	}
+	
 }
 

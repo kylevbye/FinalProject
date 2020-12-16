@@ -16,20 +16,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraEffect;
 import edu.lewisu.cs.cpsc41000.common.cameraeffects.CameraShake;
+import edu.lewisu.cs.kylevbye.input.PlayerInput;
 
-
+/**
+ * This class holds the scene that shows
+ * the battle between the player and
+ * Asgore.
+ * 
+ * @author	Kyle V Bye
+ *
+ */
 public class BattleScene {
 	
 	private int counter;
 	private int rotationCounter;
-	
 	private OrthographicCamera cam;
 	private Batch batch;
-	
 	private BattleController battleController;
-	
 	private static int stage;
-	private static AsgoreDialogue aDiag = new AsgoreDialogue();
 	private int WIDTH, HEIGHT;
 	private ArrayList<Drawable> drawables;
 	private int state;
@@ -47,16 +51,25 @@ public class BattleScene {
 	private PNGAnimatedMobileScreenObject playerAttackAnim;
 	private Sound attackSlashSound;
 	private Sound asgoreHurtSound;
+	private Sound hurtSound;
 	private Music asgoreIntroMusic;
 	private Music asgoreBattleMusic;
 	private Label damageLabel;
+	private Label cheatLabel;
 	private HealthBar asgoreHealthBar;
 	
+	private boolean cheatMode;
 	private CameraEffect cameraShaker;
 	private float asgoreDamage;
 	private float asgoreTrans;
-	private boolean played;
+	private int playerImmunity;
 	
+	/**
+	 * Constants used to control the stages and states
+	 * of the scene
+	 * @author	Kyle V Bye
+	 *
+	 */
 	public class BattleSceneConstants {
 		
 		//	During Battle
@@ -93,12 +106,20 @@ public class BattleScene {
 	
 	public void setState(int stateIn) { state = stateIn; }
 	
+	/**
+	 * Initializes the scene to be ready to be rendered.
+	 * 
+	 * @param	camIn	cam to play the scene
+	 * @param	batchIn	batch to draw the scene on
+	 */
 	public void create(OrthographicCamera camIn, Batch batchIn) {
+		
+		cheatMode = false;
 
 		counter = 0;
-		state = BattleSceneConstants.PLAN;
 		asgoreDamage = 0f;
 		asgoreTrans = 1f;
+		playerImmunity = 0;
 		
 		cam = camIn;
 		batch = batchIn;
@@ -166,13 +187,19 @@ public class BattleScene {
 		AsgoreAttack.player = player;
 		
 		//	Music
-		asgoreIntroMusic = AssetManager.loadMusic("asgorePreBattle.mp3");
-		asgoreIntroMusic.setLooping(false);
-		asgoreBattleMusic = AssetManager.loadMusic("asgoreBattle.mp3");
-		asgoreBattleMusic.setVolume(.3f);
+		if (asgoreIntroMusic == null) {
+			asgoreIntroMusic = AssetManager.loadMusic("asgorePreBattle.mp3");
+		}
+		if (asgoreBattleMusic == null) {
+			asgoreBattleMusic = AssetManager.loadMusic("asgoreBattle.mp3");
+			asgoreBattleMusic.setVolume(.3f);
+		}
 		
 		//	Attack sound
 		attackSlashSound = AssetManager.loadSound("slash.mp3");
+		
+		//	Hurt Sound
+		hurtSound = AssetManager.loadSound("hurt.mp3");
 		
 		//	Asgore hurt
 		asgoreHurtSound = AssetManager.loadSound("asgoreDamaged.mp3");
@@ -197,44 +224,68 @@ public class BattleScene {
 				WIDTH/2, HEIGHT/40, asgore.getHealth(), asgore.getMaxHealth(), Color.GREEN, Color.GRAY
 				);
 		asgoreHealthBar.setPosition(asgoreHealthBar.getX()-asgoreHealthBar.getWidth()/2, asgoreHealthBar.getY());
+		
+		//	CheatLabel
+		LabelStyle cheatStyle = new LabelStyle(new BitmapFont(), Color.WHITE);
+		cheatLabel = new Label("CHEAT", cheatStyle);
+		cheatLabel.setPosition(WIDTH-cheatLabel.getWidth(), HEIGHT-cheatLabel.getHeight());
+		
+		AsgoreAttack.player = player;
+		AsgoreAttackFactory.player = player;
+		
+		state = BattleSceneConstants.PLAN;
 	}
 	
+	/**
+	 * Renders the scene to the screen.
+	 */
 	public void render() {
 		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
-		for (int i = 0; i<souls.length; ++i) {
-			
-			float x = (float)Math.cos(Math.toRadians(rotationCounter+i*60f))*2f;
-			float y = (float)Math.sin(Math.toRadians(rotationCounter+i*60f))*2f;
-			
-			System.out.println(x + " " + y);
-			souls[i].move(x,y);
-			souls[i].draw(batch, asgoreTrans);
-			
-		}
-		
-		buttonUI.draw(batch, 1f);
-		playerUI.update(player.getHealth());
-		playerUI.draw(batch, 1f);
-		
 		//	Game Logic
-		asgore.draw(batch, asgoreTrans);
 		
-		if (player.getHealth() == 0) stage = BattleSceneConstants.GAME_OVER;
-		if (asgore.getHealth() == 0) stage = BattleSceneConstants.GAME_WIN;
+		if (PlayerInput.mMiddleWasClicked) cheatMode = true;
+		if (cheatMode) cheatLabel.draw(batch, .5f);
 		
 		switch (stage) {
 		
 		case BattleSceneConstants.INITIAL_DIALOGUE:
 			
+			for (int i = 0; i<souls.length; ++i) souls[i].draw(batch, asgoreTrans);
+			asgore.draw(batch, asgoreTrans);
+			
 			if (counter == 0) { AssetManager.addToSoundQueue(asgoreIntroMusic); }
-			if (counter == 1500) stage = BattleSceneConstants.FIRST_STAGE;
+			if (counter == 1550) {
+				asgoreIntroMusic.stop();
+				stage = BattleSceneConstants.FIRST_STAGE;
+			}
+			
+			asgore.setHealth(Float.MAX_VALUE);
+			player.setHealth(Float.MAX_VALUE);
 			
 			break;
 		
 		case BattleSceneConstants.FIRST_STAGE:
+			
+			if (player.getHealth() == 0 && cheatMode == false) stage = BattleSceneConstants.GAME_OVER;
+			if (asgore.getHealth() == 0) stage = BattleSceneConstants.GAME_WIN;
+			
+			for (int i = 0; i<souls.length; ++i) {
+				
+				float x = (float)Math.cos(Math.toRadians(rotationCounter+i*60f))*2f;
+				float y = (float)Math.sin(Math.toRadians(rotationCounter+i*60f))*2f;
+				
+				souls[i].move(x,y);
+				souls[i].draw(batch, asgoreTrans);
+				
+			}
+			
+			buttonUI.draw(batch, 1f);
+			playerUI.update(player.getHealth());
+			playerUI.draw(batch, 1f);
+			asgore.draw(batch, asgoreTrans);
 			
 			if (!asgoreBattleMusic.isPlaying()) AssetManager.addToSoundQueue(asgoreBattleMusic);
 			
@@ -245,7 +296,7 @@ public class BattleScene {
 				
 				if (currentAsgoreAttack == null) {
 					System.out.println("Defend start");
-					currentAsgoreAttack = new AsgoreAttack(150, 150, 300);
+					currentAsgoreAttack = AsgoreAttackFactory.generateRandomAsgoreAttack();
 				}
 				
 				
@@ -254,11 +305,16 @@ public class BattleScene {
 					battleController.handleSoul();
 					currentAsgoreAttack.draw(batch, 1f);
 					player.getColor().b = 1;
-					player.draw(batch, 1f);
+					if (playerImmunity == 0 || counter % 7 == 0) player.draw(batch, 1f);
+					if (currentAsgoreAttack.isColliding(player) && playerImmunity == 0) {
+						AssetManager.addToSoundQueue(hurtSound);
+						player.absorbDamage(currentAsgoreAttack.getDamageValue());
+						playerImmunity = 35;
+					}
+					if (playerImmunity != 0) --playerImmunity;
 				}
 				else {
 					state = BattleSceneConstants.PLAN;
-					currentAsgoreAttack.dispose();
 					currentAsgoreAttack = null;
 				}
 				
@@ -316,6 +372,8 @@ public class BattleScene {
 			
 		case BattleSceneConstants.GAME_WIN:
 			
+			if (currentAsgoreAttack != null) currentAsgoreAttack.dispose();
+			currentAsgoreAttack = null;
 			asgoreBattleMusic.pause();
 			asgoreIntroMusic.pause();
 			FinalProject.scene = FinalProject.SceneConstants.GAMEWIN;
@@ -324,6 +382,9 @@ public class BattleScene {
 			
 		case BattleSceneConstants.GAME_OVER:
 			
+			if (currentAsgoreAttack != null) currentAsgoreAttack.dispose();
+			currentAsgoreAttack = null;
+			AssetManager.getSoundQueue().clear(); 
 			asgoreBattleMusic.pause();
 			asgoreIntroMusic.pause();
 			FinalProject.scene = FinalProject.SceneConstants.GAMEOVER;
@@ -339,15 +400,19 @@ public class BattleScene {
 		
 	}
 	
+	/**
+	 * Resets the scene to be played again.
+	 */
 	public void reset() {
 		
+		cheatMode = false;
+	
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
 		counter = 0;
+		stage = BattleSceneConstants.INITIAL_DIALOGUE;
 		state = BattleSceneConstants.PLAN;
-		
-		stage = BattleSceneConstants.FIRST_STAGE;
 		
 		asgoreIntroMusic.setPosition(0f);
 		asgoreBattleMusic.setPosition(0f);
@@ -360,6 +425,17 @@ public class BattleScene {
 		player.setHealth(Float.MAX_VALUE);
 		asgoreHealthBar.setHealth(Float.MAX_VALUE);
 		asgoreTrans = 1f;
+		
+		playerAttackAnim.resetFrameCount();
+		
+		if (currentAsgoreAttack != null) currentAsgoreAttack.dispose();
+		currentAsgoreAttack = null;
+		playerImmunity = 0;
+		
+		for (int i = 0; i<souls.length; ++i) {
+			souls[i].setPosition(WIDTH/2-souls[i].getWidth()/2, HEIGHT/2-souls[i].getHeight()/2);
+			setSoulPosition(souls[i], i);
+		}
 		
 	}
 	
@@ -424,9 +500,39 @@ public class BattleScene {
 	///	Destructor
 	///
 	
+	/**
+	 * Memory Cleanup
+	 */
 	public void dispose() {
 		
+		for (MobileScreenObject soul : souls) soul.dispose();
 		player.dispose();
+		asgore.dispose();
+		buttonUI.dispose();
+		playerUI.dispose();
+		playerAttackAnim.dispose();
+		attackSlashSound.dispose();
+		asgoreHurtSound.dispose();
+		hurtSound.dispose();
+		//asgoreIntroMusic.dispose();
+		//asgoreBattleMusic.dispose();
+		asgoreHealthBar.dispose();
+		
+		AsgoreAttack.player = null;
+		AsgoreAttackFactory.player = null;
+		
+		souls = null;
+		player = null;
+		asgore = null;
+		buttonUI = null;
+		playerUI = null;
+		playerAttackAnim = null;
+		attackSlashSound = null;
+		asgoreHurtSound = null;
+		hurtSound = null;
+		//asgoreIntroMusic = null;
+		//asgoreBattleMusic = null;
+		asgoreHealthBar = null;
 		
 	}
 

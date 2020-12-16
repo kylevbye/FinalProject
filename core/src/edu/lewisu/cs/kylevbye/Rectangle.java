@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * @author byekv
- *
+ * This class is literally just a rectangle.
+ * @author Kyle V Bye
  */
 public class Rectangle extends MobileScreenObject {
 	

@@ -1,9 +1,11 @@
 package edu.lewisu.cs.kylevbye;
 
-import java.util.ArrayList;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-
+/**
+ * This class holds the health values, along with the position of
+ * Asgore himself.
+ * 
+ * @author	Kyle V Bye
+ */
 public class AsgoreEntity extends MobileScreenObject implements Entity {
 	
 	private float health;
@@ -12,7 +14,6 @@ public class AsgoreEntity extends MobileScreenObject implements Entity {
 	///
 	///	Getters
 	///
-	
 	
 	@Override
 	public float getHealth() { return health; }
@@ -35,22 +36,6 @@ public class AsgoreEntity extends MobileScreenObject implements Entity {
 	public void setMaxHealth(float maxHealthIn) { maxHealth = maxHealthIn; }
 	
 	///
-	///	Soul Sprites
-	///
-	
-	public class SoulSprites {
-		
-		public static final int DETERMINATION = 0;
-		public static final int BRAVERY = 1;
-		public static final int JUSTICE = 2;
-		public static final int KINDNESS = 3;
-		public static final int PATIENCE = 4;
-		public static final int INTEGRITY = 5;
-		public static final int PERSEVERANCE = 6;
-		
-	}
-	
-	///
 	///	Functions
 	///
 	
@@ -70,17 +55,27 @@ public class AsgoreEntity extends MobileScreenObject implements Entity {
 	}
 	
 	
-	
 	///
 	///	Constructors
 	///
 	
+	/**
+	 * Sets asgore at 0,0 with the provided image.
+	 * @param	imageIn	Asgore Sprite
+	 */
 	public AsgoreEntity(Image imageIn) {
 		
 		this(0f, 0f, imageIn);
 		
 	}
 	
+	/**
+	 * Sets Asgore at the provided coordinates with
+	 * the provided Image as the sprite
+	 * @param	xIn	x coordinate
+	 * @param	yIn	y coordinate
+	 * @param	imageIn	Asgore Sprite
+	 */
 	public AsgoreEntity(float xIn, float yIn, Image imageIn) {
 		
 		super(imageIn);
@@ -92,6 +87,9 @@ public class AsgoreEntity extends MobileScreenObject implements Entity {
 	///	Destructor
 	///
 	
+	/**
+	 * Memory clean up
+	 */
 	public void dispose() {
 		
 		setMaxHealth(100);

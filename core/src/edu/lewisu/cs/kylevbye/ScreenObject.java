@@ -44,7 +44,6 @@ public class ScreenObject extends Image implements Collidable {
 	///	Collidable
 	///
 	
-	public Polygon getBoundingPolygon() { return boundingPolygon; }
 	public void setBoundingPolygon(Polygon boundingPolygonIn) { boundingPolygon = boundingPolygonIn; }
 	
 	///
@@ -59,13 +58,27 @@ public class ScreenObject extends Image implements Collidable {
 		
 		//	Primitive float arrays init all vals to 0.
 		float[] vertices = new float[8];
-		vertices[0] = getWidth();
-		vertices[4] = vertices[2];
-		vertices[5] = getHeight();
-		vertices[7] = vertices[5];
+		vertices[0] = 0;
+        vertices[1] = 0;
+        vertices[2] = getWidth();
+        vertices[3] = 0;
+        vertices[4] = vertices[2];
+        vertices[5] = getHeight();
+        vertices[6] = 0;
+        vertices[7] = vertices[5];
 		boundingPolygon = new Polygon(vertices);
 		
 	}
+	
+	@Override
+    public Polygon getBoundingPolygon() {
+        boundingPolygon.setPosition(getX(),getY());
+        boundingPolygon.setOrigin(getOriginX(),getOriginY());
+        boundingPolygon.setRotation(getRotation());
+        boundingPolygon.setScale(getScaleX(),getScaleY());
+        return boundingPolygon;
+    }
+	
 	
 	///
 	///	Constructors

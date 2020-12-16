@@ -1,11 +1,22 @@
 package edu.lewisu.cs.kylevbye;
 
+import com.badlogic.gdx.math.Polygon;
+
+/**
+ * This class is the soul you control in the game.
+ * 
+ * @author	Kyle V Bye
+ *
+ */
 public class PlayerEntity extends MobileScreenObject implements Entity {
 	
 	///
-	///	Field
+	///	Fields
 	///
 	
+	/*
+	 * Unused
+	 */
 	private Image[] soulSprites;
 	
 	
@@ -43,6 +54,9 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	///	Soul Sprites
 	///
 	
+	/**
+	 * Unused.
+	 */
 	public class SoulSprites {
 		
 		public static final int DETERMINATION = 0;
@@ -58,6 +72,53 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	///
 	///	Functions
 	///
+	
+	@Override
+	public void initBoundingPolygon() {
+		
+		//	Since only one type of sprite is used
+		//	Manually setting the polygon is fine.
+		float[] vertices = new float[24];
+		
+		vertices[0] = 8;
+        vertices[1] = 14;
+        
+        vertices[2] = 8;
+        vertices[3] = 21;
+        
+        vertices[4] = 10;
+        vertices[5] = 23;
+        
+        vertices[6] = 11;
+        vertices[7] = 23;
+        
+        vertices[8] = 15;
+        vertices[9] = 19;
+        
+        vertices[10] = 16;
+        vertices[11] = 19;
+        
+        vertices[12] = 20;
+        vertices[13] = 23;
+        
+        vertices[14] = 21;
+        vertices[15] = 23;
+        
+        vertices[16] = 23;
+        vertices[17] = 21;
+        
+        vertices[18] = 23;
+        vertices[19] = 14;
+        
+        vertices[20] = 14;
+        vertices[21] = 8;
+        
+        vertices[22] = 17;
+        vertices[23] = 8;
+        
+		boundingPolygon = new Polygon(vertices);
+		
+	}
 	
 	@Override
 	public void attack(Entity otherIn, float damageIn) {
@@ -98,7 +159,7 @@ public class PlayerEntity extends MobileScreenObject implements Entity {
 	
 	public void dispose() {
 		
-		for (Image i : soulSprites) i.dispose();
+		if (soulSprites != null) for (Image i : soulSprites) i.dispose();
 		setMaxHealth(100);
 		setHealth(maxHealth);
 		

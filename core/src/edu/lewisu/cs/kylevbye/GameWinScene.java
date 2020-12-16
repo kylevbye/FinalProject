@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * This scene is for when the player beats asgore.
+ * 
+ * @author Kyle V Bye
+ *
+ */
 public class GameWinScene {
 	
 	private int counter;
@@ -23,7 +29,12 @@ public class GameWinScene {
 	private Sound soulbreakSound;
 	private Sound soulShatterSound;
 	
-	
+	/**
+	 * Sets the scene and scripts.
+	 * 
+	 * @param	camIn	cam to play the scene
+	 * @param	batchIn	batch to draw the scene on
+	 */
 	public void create(OrthographicCamera camIn, Batch batchIn) {
 		
 		counter = 0;
@@ -51,6 +62,9 @@ public class GameWinScene {
 		
 	}
 	
+	/**
+	 * Draws the scene
+	 */
 	public void render() {
 		
 		for (int i = 0; i<souls.length-1; ++i) manageSoul(i, 60);
@@ -62,6 +76,9 @@ public class GameWinScene {
 		
 	}
 	
+	/**
+	 * Resets the scene to be played again.
+	 */
 	public void reset() {
 
 		counter = 0;
@@ -74,6 +91,9 @@ public class GameWinScene {
 	///	Helpers
 	///
 	
+	/*
+	 * Loads the soul into memory.
+	 */
 	private ScreenObject loadSoul(float xIn, float yIn, Color colorIn) {
 		ScreenObject soul = new ScreenObject(AssetManager.loadImage("monsterSoul.png"));
 		
@@ -132,6 +152,9 @@ public class GameWinScene {
 		
 	}
 	
+	/*
+	 * Runs the script of the soul.
+	 */
 	private void manageSoul(int soulIndex, int dt) {
 		
 		if (counter < 15 + dt*soulIndex) souls[soulIndex].draw(batch, 1f);
@@ -143,6 +166,9 @@ public class GameWinScene {
 		
 	}
 	
+	/*
+	 * Sets the soul to its scripted position.
+	 */
 	private void setSoulPosition(ScreenObject soul, int soulIndex) {
 		
 		float x, y;
@@ -185,6 +211,9 @@ public class GameWinScene {
 		
 	}
 	
+	/*
+	 * Sets the souls scripted color.
+	 */
 	private void setSoulColor(ScreenObject soul, int soulIndex) {
 		
 		switch (soulIndex) {
@@ -221,6 +250,9 @@ public class GameWinScene {
 	///
 	///	Destructors
 	///
+	/**
+	 * Clean up
+	 */
 	public void dispose() {
 		
 		soulbreakSound.dispose();

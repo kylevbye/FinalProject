@@ -1,5 +1,12 @@
 package edu.lewisu.cs.kylevbye;
 
+/**
+ * Describes an object that has health, can attack
+ * and can defend.
+ * 
+ * @author Kyle V Bye
+ *
+ */
 public interface Entity {
 	
 	///

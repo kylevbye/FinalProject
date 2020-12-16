@@ -2,12 +2,27 @@ package edu.lewisu.cs.kylevbye;
 
 import edu.lewisu.cs.kylevbye.input.PlayerInput;
 
+/**
+ * This class is mostly an extension of the BattleScene.
+ * Holds functions that BattleScene would use to process 
+ * game logic.
+ * 
+ * @author	Kyle V Bye
+ */
 public class BattleController {
 	
 	private PlayerEntity player;
 	private BattleButtonUI battleUI;
 	private BattleScene scene;
 	
+	///
+	///	Functions
+	///
+	
+	/**
+	 * Runs asgore's attack
+	 * @param	attackIn	attack to run.
+	 */
 	public void defend(AsgoreAttack attackIn) {
 		
 		AsgoreAttack attack = attackIn;
@@ -15,6 +30,10 @@ public class BattleController {
 		
 	}
 	
+	/**
+	 * Manages the controls and applies the appropriate actions
+	 * in the menu battleUI.
+	 */
 	public void handleMenu() {
 		
 		
@@ -35,6 +54,9 @@ public class BattleController {
 		
 	}
 	
+	/**
+	 * Handles player movements when player is dodging.
+	 */
 	public void handleSoul() {
 		
 		float movementSpeed = 2.5f;
@@ -47,7 +69,11 @@ public class BattleController {
 		
 		
 	}
-
+	
+	///
+	///	Constructors
+	///
+	
 	public BattleController(
 			PlayerEntity playerIn, BattleButtonUI battleUIIn, BattleScene sceneIn
 			) {
